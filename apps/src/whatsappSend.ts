@@ -1,4 +1,5 @@
 import { Page } from "puppeteer";
+import { sleep } from "./utils";
 import { SELECTORS } from "./whatsapp";
 
 let counter = { fails: 0, success: 0 };
@@ -12,16 +13,27 @@ async function sendTo(page: Page, phone: string, message: string) {
       )}`,
       { timeout: 0 }
     );
+    console.log("GoTo okay\r");
+
     await page.waitForSelector(SELECTORS.LOADING, {
       hidden: true,
       timeout: 60000,
     });
+    console.log("WaitFor selector 1 okay\r");
+
     await page.waitForSelector(SELECTORS.SEND_BUTTON, { timeout: 5000 });
+    console.log("WaitFor selector 2 okay\r");
+
     await page.keyboard.press("Enter");
-    // await page.w(1000);
+    console.log("enter okay\r");
+
+    // await page.waitForResponse();
     // process.stdout.clearLine();
     // process.stdout.cursorTo(0);
+    await sleep(10000);
     process.stdout.write(`${phone} Sent\n`);
+    console.log("enter okay\r");
+
     counter.success++;
   } catch (err) {
     // process.stdout.clearLine();

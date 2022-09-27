@@ -55,10 +55,11 @@ async function sendMessage(msg: string) {
   // const phones = ["33614464693"];
   const phones = ["33763140355"];
 
-  // await end(browser);
   await send(page, phones, msg);
-
-  await sleep(4000);
+  console.log("going to end");
+  // await end(browser);
+  await sleep(100000);
+  browser.close();
 }
 
 async function checkSport(page: Page, sport: ISport) {
@@ -83,7 +84,8 @@ async function checkSport(page: Page, sport: ISport) {
         "Coucou Maman, tu peux booker ton cours de " + sport.name
       );
       doSleep = false;
-    }
+    } else console.log("Nothing to do here");
+
     sport.lastValue = length;
     if (doSleep) await sleep(2000);
   } catch (err) {
@@ -92,8 +94,9 @@ async function checkSport(page: Page, sport: ISport) {
 }
 
 async function main() {
-  await sendMessage("let's go");
   while (1) {
+    await sendMessage("let's go");
+    continue;
     try {
       console.log("Launching web");
       browser = await startBrowser();
@@ -154,7 +157,7 @@ async function main() {
 
     await browser?.close();
     console.log("Time to sleep 2 minutes");
-    await sleep(300000);
+    // await sleep(300000);
   }
 }
 

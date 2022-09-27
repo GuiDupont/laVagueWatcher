@@ -21,28 +21,28 @@ function deleteSession(tmpPath: string) {
   rimraf.sync(tmpPath);
 }
 
-function needsToScan(page: Page) {
+async function needsToScan(page: Page) {
+  //   return from(
+  // await (page.waitForSelector(SELECTORS.QRCODE_PAGE, {
+  //   timeout: 0,
+  // })
+  //   );
+  //   return false;
+}
+
+async function isInsideChat(page: Page) {
   return from(
-    page
-      .waitForSelector(SELECTORS.QRCODE_PAGE, {
-        timeout: 0,
-      })
-      .then(() => false)
+    await (page as any).waitForFunction(SELECTORS.INSIDE_CHAT, {
+      timeout: 0,
+    })
   );
 }
 
-function isInsideChat(page: Page) {
-  return from(
-    page
-      .waitForFunction(SELECTORS.INSIDE_CHAT, {
-        timeout: 0,
-      })
-      .then(() => true)
-  );
-}
-
-function isAuthenticated(page: Page) {
+async function isAuthenticated(page: Page) {
   console.log("Authenticating...");
+  const needsTo = needsToScan(page);
+  const insideChat = isInsideChat(page);
+  console.log(needsTo, insideChat);
   return merge(needsToScan(page), isInsideChat(page)).pipe(take(1));
 }
 
@@ -67,7 +67,7 @@ async function waitQRCode(page: Page) {
       hidden: true,
     });
   } catch (err) {
-    throw await QRCodeExeption("Dont't be late to scan the QR Code.");
+    throw await QRCodeExeption("Don't be late to scan the QR Code.");
   }
 }
 
@@ -121,19 +121,34 @@ async function start(showBrowser = false, qrCodeData = false, session = true) {
     );
     page.setDefaultTimeout(100000);
     await page.goto("https://web.whatsapp.com", { timeout: 0 });
-    if (session && isAuthenticated(page)) {
-      throw "!browser";
+    console.log("sounds good");
+    // console.log(
+    //   await page.waitForSelector(SELECTORS.QRCODE_PAGE, {
+    //     timeout: 0,
+    //   }),
+    //   await page.waitForFunction(SELECTORS.INSIDE_CHAT, {
+    //     timeout: 0,
+    //   })
+    // );
+    // if (session && (await isAuthenticated(page)))
+    //   console.log("already connected");
+    // else {
+    await page.evaluate(() => {
+      const elements = document.getElementsByClassName("landing-title _3-XoE");
+      if ()
+    });
+    await page.evaluate(() => {
+      const elements = document.getElementsByClassName("_3OvU8");
+      (elements[1] as any).click();
+    });
+
+    if (qrCodeData) {
+      console.log("Getting QRCode data...");
+      await getQRCodeData(page);
     } else {
-      if (qrCodeData) {
-        console.log("Getting QRCode data...");
-        console.log(
-          "Note: You should use wbm.waitQRCode() inside wbm.start() to avoid errors."
-        );
-        await getQRCodeData(page);
-      } else {
-        await generateQRCode(page);
-      }
+      await generateQRCode(page);
     }
+    // }
   } catch (err) {
     console.log("issue opening whatsapp");
     deleteSession(tmpPath);
@@ -153,7 +168,7 @@ export async function launchWatsapp() {
   console.log("Launching whatsapp");
 
   const { browser, page } = await start(true, true, true);
-  await waitQRCode(page);
+  //   await waitQRCode(page);
   console.log("Whatsapp is good");
   return { browser, page };
 }
