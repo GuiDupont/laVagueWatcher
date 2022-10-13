@@ -4,7 +4,10 @@ import qrcode from "qrcode-terminal";
 async function openWhatsapp(headLess: boolean) {
   const client = new Client({
     authStrategy: new LocalAuth(),
-    puppeteer: { headless: headLess, args: ["--no-sandbox"] },
+    puppeteer: {
+      headless: headLess,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    },
   });
 
   client.on("loading_screen", (percent, message) => {
