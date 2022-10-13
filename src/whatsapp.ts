@@ -135,7 +135,7 @@ async function start(showBrowser = false, qrCodeData = false, session = true) {
     // else {
     await page.evaluate(() => {
       const elements = document.getElementsByClassName("landing-title _3-XoE");
-      if ()
+      // if ()
     });
     await page.evaluate(() => {
       const elements = document.getElementsByClassName("_3OvU8");
@@ -168,7 +168,7 @@ export async function launchWatsapp() {
   console.log("Launching whatsapp");
 
   const { browser, page } = await start(true, true, true);
-  //   await waitQRCode(page);
+  await waitQRCode(page);
   console.log("Whatsapp is good");
   return { browser, page };
 }

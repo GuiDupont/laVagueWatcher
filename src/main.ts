@@ -14,6 +14,8 @@ import { sleep } from "./utils";
 import { now } from "moment";
 import { end, launchWatsapp } from "./whatsapp";
 import { send } from "./whatsappSend";
+import openWhatsapp from "./whatsapp/openWhatsappPage";
+import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 let browser: Browser | undefined;
 
@@ -23,32 +25,61 @@ interface ISport {
   name: string;
 }
 const sports = [
-  // {
-  //   url: BODYCOMBAT_URL,
-  //   name: 'Bodycombat',
-  //   lastValue: 5,
-  // },
   {
     url: RPM_URL,
     name: "RPM",
     lastValue: 5,
   },
-  // {
-  //   url: ZUMBA_URL,
-  //   name: 'ZUMBA',
-  //   lastValue: 5,
-  // },
-  // {
-  //   url: CAF_URL,
-  //   name: 'CAF',
-  //   lastValue: 5,
-  // },
-  // {
-  //   url: CT_URL,
-  //   name: 'CT',
-  //   lastValue: 5,
-  // },
 ];
+
+async function login() {
+  let page: Page;
+
+  page = await browser!.newPage();
+  page.on("load", () => {
+    const content = `
+        *,
+        *::after,
+        *::before {
+          transition-delay: 0s !important;
+          transition-duration: 0s !important;
+          animation-delay: -0.0001s !important;
+          animation-duration: 0s !important;
+          animation-play-state: paused !important;
+          caret-color: transparent !important;
+        }`;
+    page.addStyleTag({ content });
+  });
+  await page.goto(BASE_URL, {
+    timeout: 0,
+  });
+  await sleep(2000);
+  console.log("About to connect");
+  await page.evaluate(() => {
+    const elements = document.getElementsByTagName("input");
+    elements[1].value = "s.dupont@imperialnegoce.fr";
+    elements[2].value = "Sd150266";
+    elements[3].click();
+  });
+  await sleep(2000);
+
+  await page.goto(BOOK_URL, {
+    timeout: 0,
+  });
+  await sleep(2000);
+
+  await page.evaluate(() => {
+    const divs = document.getElementsByTagName("div");
+    console.log(divs);
+    divs[17].click();
+  });
+  await page.evaluate(() => {
+    const inputs = document.getElementsByTagName("input");
+    inputs[1].click();
+    console.log(inputs);
+  });
+  return page;
+}
 
 async function sendMessage(msg: string) {
   const { browser, page } = await launchWatsapp();
@@ -80,10 +111,8 @@ async function checkSport(page: Page, sport: ISport) {
     if (length === undefined) length = 0;
     console.log("There are ", length, "slots");
     if (length > sport.lastValue) {
-      await sendMessage(
-        "Coucou Maman, tu peux booker ton cours de " + sport.name
-      );
-      doSleep = false;
+      sport.lastValue = length;
+      return true;
     } else console.log("Nothing to do here");
 
     sport.lastValue = length;
@@ -94,59 +123,27 @@ async function checkSport(page: Page, sport: ISport) {
 }
 
 async function main() {
+  const whatsapp = await openWhatsapp();
+  const [maman] = (await whatsapp.getContacts()).filter(
+    (contact) =>
+      contact.number ==
+      // "33763140355"
+      "33614464693"
+  );
+  const sportIMG = MessageMedia.fromFilePath("assets/sport.gif");
+  const chat = await maman.getChat();
+  await chat.sendMessage(sportIMG);
+  await chat.sendMessage("ceci est un test");
   while (1) {
-    await sendMessage("let's go");
-    continue;
     try {
       console.log("Launching web");
       browser = await startBrowser();
-      let page: Page;
-
-      page = await browser!.newPage();
-      page.on("load", () => {
-        const content = `
-        *,
-        *::after,
-        *::before {
-          transition-delay: 0s !important;
-          transition-duration: 0s !important;
-          animation-delay: -0.0001s !important;
-          animation-duration: 0s !important;
-          animation-play-state: paused !important;
-          caret-color: transparent !important;
-        }`;
-        page.addStyleTag({ content });
-      });
-      await page.goto(BASE_URL, {
-        timeout: 0,
-      });
-      await sleep(2000);
-      console.log("About to connect");
-      await page.evaluate(() => {
-        const elements = document.getElementsByTagName("input");
-        elements[1].value = "s.dupont@imperialnegoce.fr";
-        elements[2].value = "Sd150266";
-        elements[3].click();
-      });
-      await sleep(2000);
-
-      await page.goto(BOOK_URL, {
-        timeout: 0,
-      });
-      await sleep(2000);
-
-      await page.evaluate(() => {
-        const divs = document.getElementsByTagName("div");
-        console.log(divs);
-        divs[17].click();
-      });
-      await page.evaluate(() => {
-        const inputs = document.getElementsByTagName("input");
-        inputs[1].click();
-        console.log(inputs);
-      });
+      let page = await login();
       for (let i = 0; i < sports.length; i++) {
-        await checkSport(page, sports[i]);
+        if (await checkSport(page, sports[i])) {
+          chat.sendMessage("Maman tu peux réserver ton sport !");
+          chat.sendMessage(sportIMG);
+        }
       }
       console.log("everything went well");
     } catch (err) {
@@ -157,7 +154,7 @@ async function main() {
 
     await browser?.close();
     console.log("Time to sleep 2 minutes");
-    // await sleep(300000);
+    await sleep(10000);
   }
 }
 
