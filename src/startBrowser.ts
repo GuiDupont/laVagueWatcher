@@ -5,7 +5,7 @@ async function startBrowser() {
   try {
     console.log("opening browser...");
     const browser: Browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: null,
       // userDataDir: "./chrome_data",
       // executablePath: "/usr/bin/chromium-browser",

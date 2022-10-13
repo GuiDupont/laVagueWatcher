@@ -123,16 +123,15 @@ async function checkSport(page: Page, sport: ISport) {
 }
 
 async function main() {
-  const whatsapp = await openWhatsapp();
+  const whatsapp = await openWhatsapp(true);
   const [maman] = (await whatsapp.getContacts()).filter(
     (contact) =>
       contact.number ==
       // "33763140355"
       "33614464693"
   );
-  const sportIMG = MessageMedia.fromFilePath("assets/sport.gif");
+  const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
-  await chat.sendMessage(sportIMG);
   await chat.sendMessage("ceci est un test");
   while (1) {
     try {
