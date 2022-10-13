@@ -53,7 +53,7 @@ async function login() {
   await page.goto(BASE_URL, {
     timeout: 0,
   });
-  await sleep(2000);
+  await sleep(3000);
   console.log("About to connect");
   await page.evaluate(() => {
     const elements = document.getElementsByTagName("input");
@@ -61,36 +61,33 @@ async function login() {
     elements[2].value = "Sd150266";
     elements[3].click();
   });
-  await sleep(2000);
+  console.log("About to go to book_url");
+
+  await sleep(3000);
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
-  await sleep(2000);
+  await sleep(3000);
 
+  console.log("Going to get div");
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     console.log(divs);
     divs[17].click();
   });
+  console.log("Going to get input");
+  await sleep(3000);
+
   await page.evaluate(() => {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
     console.log(inputs);
   });
+  await sleep(3000);
+  console.log("Going to return page, I am connected");
+
   return page;
-}
-
-async function sendMessage(msg: string) {
-  const { browser, page } = await launchWatsapp();
-  // const phones = ["33614464693"];
-  const phones = ["33763140355"];
-
-  await send(page, phones, msg);
-  console.log("going to end");
-  // await end(browser);
-  await sleep(100000);
-  browser.close();
 }
 
 async function checkSport(page: Page, sport: ISport) {
@@ -125,10 +122,7 @@ async function checkSport(page: Page, sport: ISport) {
 async function main() {
   const whatsapp = await openWhatsapp(true);
   const [maman] = (await whatsapp.getContacts()).filter(
-    (contact) =>
-      contact.number ==
-      // "33763140355"
-      "33614464693"
+    (contact) => contact.number == "33614464693"
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
