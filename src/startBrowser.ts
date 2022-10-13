@@ -8,9 +8,9 @@ async function startBrowser() {
       headless: true,
       defaultViewport: null,
       // userDataDir: "./chrome_data",
-      // executablePath: "/usr/bin/chromium-browser",
-      executablePath:
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      executablePath: "/usr/bin/chromium-browser",
+      // executablePath:
+      //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     process.on("SIGINT", function () {

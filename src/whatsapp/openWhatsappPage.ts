@@ -6,6 +6,7 @@ async function openWhatsapp(headLess: boolean) {
     authStrategy: new LocalAuth(),
     puppeteer: {
       headless: headLess,
+      executablePath: "/usr/bin/chromium-browser",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     },
   });
