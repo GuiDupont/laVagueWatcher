@@ -60,9 +60,9 @@ async function login() {
     elements[1].value = "s.dupont@imperialnegoce.fr";
     elements[2].value = "Sd150266";
     elements[3].click();
+    return page.waitForNavigation({ timeout: 0 });
   });
 
-  await page.waitForNavigation({ timeout: 0 });
   await sleep(3000);
   console.log("[" + Date.now() + "] ", "About to go to book_url");
 
@@ -75,6 +75,7 @@ async function login() {
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     divs[17].click();
+    return page.waitForNavigation({ timeout: 0 });
   });
   console.log("[" + Date.now() + "] ", "Going to get input");
   await sleep(3000);
@@ -83,6 +84,7 @@ async function login() {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
     console.log("[" + Date.now() + "] ", inputs);
+    return page.waitForNavigation({ timeout: 0 });
   });
 
   await sleep(3000);
@@ -93,7 +95,6 @@ async function login() {
 
 async function checkSport(page: Page, sport: ISport) {
   try {
-    let doSleep = true;
     console.log("Let's check " + sport.name);
     await sleep(2000);
     await page.goto(sport.url, {
@@ -107,14 +108,20 @@ async function checkSport(page: Page, sport: ISport) {
     });
 
     if (length === undefined) length = 0;
-    console.log("There are ", length, "slots");
+    console.log(
+      "There are ",
+      length,
+      "slots",
+      "last value is",
+      sport.lastValue
+    );
     if (length > sport.lastValue) {
       sport.lastValue = length;
       return true;
     } else console.log("Nothing to do here");
 
     sport.lastValue = length;
-    if (doSleep) await sleep(2000);
+    await sleep(2000);
   } catch (err) {
     throw err;
   }
@@ -127,7 +134,6 @@ async function main() {
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
-  // await chat.sendMessage("ceci est un test");
   while (1) {
     try {
       browser = await startBrowser();
