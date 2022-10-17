@@ -140,14 +140,15 @@ async function main() {
       }
       console.log("everything went well");
     } catch (err) {
+      console.log("issue in the process");
       console.log(now(), err);
       continue;
     }
-    await sleep(60000);
+    await sleep(10000);
 
     await browser?.close();
-    console.log("Time to sleep 2 minutes");
-    await sleep(10000);
+    console.log("Time to sleep 10 minutes");
+    await sleep(300000);
   }
 }
 
