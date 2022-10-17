@@ -10,7 +10,6 @@ async function openWhatsapp(headLess: boolean) {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     },
   });
-
   client.on("loading_screen", (percent, message) => {
     console.log("LOADING SCREEN", percent, message);
   });

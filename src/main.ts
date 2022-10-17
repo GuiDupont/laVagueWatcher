@@ -12,8 +12,6 @@ import startBrowser from "./startBrowser";
 import { sleep } from "./utils";
 // import * as wbm from "./api";
 import { now } from "moment";
-import { end, launchWatsapp } from "./whatsapp";
-import { send } from "./whatsappSend";
 import openWhatsapp from "./whatsapp/openWhatsappPage";
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
@@ -53,39 +51,42 @@ async function login() {
   await page.goto(BASE_URL, {
     timeout: 0,
   });
+
+  console.log("[" + Date.now() + "] ", "I am in ", BASE_URL);
   await sleep(3000);
-  console.log("About to connect");
+  console.log("[" + Date.now() + "] ", "About to connect");
   await page.evaluate(() => {
     const elements = document.getElementsByTagName("input");
     elements[1].value = "s.dupont@imperialnegoce.fr";
     elements[2].value = "Sd150266";
     elements[3].click();
   });
-  console.log("About to go to book_url");
 
+  await page.waitForNavigation({ timeout: 0 });
   await sleep(3000);
+  console.log("[" + Date.now() + "] ", "About to go to book_url");
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
   await sleep(3000);
 
-  console.log("Going to get div");
+  console.log("[" + Date.now() + "] ", "Going to get div");
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
-    console.log(divs);
     divs[17].click();
   });
-  console.log("Going to get input");
+  console.log("[" + Date.now() + "] ", "Going to get input");
   await sleep(3000);
 
   await page.evaluate(() => {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
-    console.log(inputs);
+    console.log("[" + Date.now() + "] ", inputs);
   });
+
   await sleep(3000);
-  console.log("Going to return page, I am connected");
+  console.log("[" + Date.now() + "] ", "Going to return page, I am connected");
 
   return page;
 }
@@ -126,10 +127,9 @@ async function main() {
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
-  await chat.sendMessage("ceci est un test");
+  // await chat.sendMessage("ceci est un test");
   while (1) {
     try {
-      console.log("Launching web");
       browser = await startBrowser();
       let page = await login();
       for (let i = 0; i < sports.length; i++) {
@@ -145,8 +145,11 @@ async function main() {
       continue;
     }
     await sleep(10000);
-
-    await browser?.close();
+    try {
+      await browser?.close();
+    } catch (e) {
+      console.log("error while closing: ", e);
+    }
     console.log("Time to sleep 10 minutes");
     await sleep(300000);
   }
