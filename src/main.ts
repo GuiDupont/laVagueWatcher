@@ -110,7 +110,6 @@ async function checkSport(page: Page, sport: ISport) {
       return el.children.length;
     });
 
-    if (length === undefined) length = 0;
     console.log(
       "[" + Date.now().toLocaleString("fr") + "] ",
       "There are ",
@@ -119,6 +118,7 @@ async function checkSport(page: Page, sport: ISport) {
       "last value is",
       sport.lastValue
     );
+    if (length === undefined) length = sport.lastValue;
     if (length > sport.lastValue) {
       sport.lastValue = length;
       return true;
@@ -129,7 +129,7 @@ async function checkSport(page: Page, sport: ISport) {
       );
 
     sport.lastValue = length;
-    await sleep(2000);
+    await sleep(2 * 1000);
   } catch (err) {
     throw err;
   }
@@ -183,7 +183,7 @@ async function main() {
       "[" + Date.now().toLocaleString("fr") + "] ",
       "Time to sleep 10 minutes"
     );
-    await sleep(5000);
+    await sleep(10 * 60 * 1000);
   }
 }
 
