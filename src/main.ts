@@ -157,7 +157,7 @@ async function main() {
       console.log("error while closing: ", e);
     }
     console.log("Time to sleep 10 minutes");
-    await sleep(300000);
+    await sleep(5000);
   }
 }
 
