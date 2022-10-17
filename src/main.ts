@@ -26,7 +26,7 @@ const sports = [
   {
     url: RPM_URL,
     name: "RPM",
-    lastValue: 5,
+    lastValue: Number.MAX_SAFE_INTEGER,
   },
 ];
 
@@ -54,7 +54,7 @@ async function login() {
 
   console.log("[" + Date.now() + "] ", "I am in ", BASE_URL);
   await sleep(3000);
-  console.log("[" + Date.now() + "] ", "About to connect");
+  console.log("[" + Date.now().toLocaleString("fr") + "] ", "About to connect");
   await page.evaluate(() => {
     const elements = document.getElementsByTagName("input");
     elements[1].value = "s.dupont@imperialnegoce.fr";
@@ -95,7 +95,10 @@ async function login() {
 
 async function checkSport(page: Page, sport: ISport) {
   try {
-    console.log("Let's check " + sport.name);
+    console.log(
+      "[" + Date.now().toLocaleString("fr") + "] ",
+      "Let's check " + sport.name
+    );
     await sleep(2000);
     await page.goto(sport.url, {
       timeout: 0,
@@ -109,6 +112,7 @@ async function checkSport(page: Page, sport: ISport) {
 
     if (length === undefined) length = 0;
     console.log(
+      "[" + Date.now().toLocaleString("fr") + "] ",
       "There are ",
       length,
       "slots",
@@ -118,7 +122,11 @@ async function checkSport(page: Page, sport: ISport) {
     if (length > sport.lastValue) {
       sport.lastValue = length;
       return true;
-    } else console.log("Nothing to do here");
+    } else
+      console.log(
+        "[" + Date.now().toLocaleString("fr") + "] ",
+        "Nothing to do here"
+      );
 
     sport.lastValue = length;
     await sleep(2000);
@@ -140,13 +148,24 @@ async function main() {
       let page = await login();
       for (let i = 0; i < sports.length; i++) {
         if (await checkSport(page, sports[i])) {
+          console.log(
+            "[" + Date.now().toLocaleString("fr") + "] ",
+            "New slot identified !"
+          );
+
           chat.sendMessage("Maman tu peux réserver ton sport !");
           chat.sendMessage(sportIMG);
         }
       }
-      console.log("everything went well");
+      console.log(
+        "[" + Date.now().toLocaleString("fr") + "] ",
+        "everything went well"
+      );
     } catch (err) {
-      console.log("issue in the process");
+      console.log(
+        "[" + Date.now().toLocaleString("fr") + "] ",
+        "issue in the process"
+      );
       console.log(now(), err);
       continue;
     }
@@ -154,9 +173,16 @@ async function main() {
     try {
       await browser?.close();
     } catch (e) {
-      console.log("error while closing: ", e);
+      console.log(
+        "[" + Date.now().toLocaleString("fr") + "] ",
+        "error while closing: ",
+        e
+      );
     }
-    console.log("Time to sleep 10 minutes");
+    console.log(
+      "[" + Date.now().toLocaleString("fr") + "] ",
+      "Time to sleep 10 minutes"
+    );
     await sleep(5000);
   }
 }
@@ -164,5 +190,5 @@ async function main() {
 main()
   .catch((e) => console.log("error: " + e))
   .finally(async () => {
-    //await browser?.close();
+    // await browser?.close();
   });
