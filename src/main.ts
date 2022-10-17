@@ -60,8 +60,8 @@ async function login() {
     elements[1].value = "s.dupont@imperialnegoce.fr";
     elements[2].value = "Sd150266";
     elements[3].click();
-    return page.waitForNavigation({ timeout: 0 });
   });
+  page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
   console.log("[" + Date.now() + "] ", "About to go to book_url");
@@ -75,8 +75,8 @@ async function login() {
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     divs[17].click();
-    return page.waitForNavigation({ timeout: 0 });
   });
+  page.waitForNavigation({ timeout: 0 });
   console.log("[" + Date.now() + "] ", "Going to get input");
   await sleep(3000);
 
@@ -84,8 +84,8 @@ async function login() {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
     console.log("[" + Date.now() + "] ", inputs);
-    return page.waitForNavigation({ timeout: 0 });
   });
+  page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
   console.log("[" + Date.now() + "] ", "Going to return page, I am connected");
