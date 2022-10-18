@@ -84,7 +84,6 @@ async function login() {
   await page.evaluate(() => {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
-    console.log("[" + moment().format() + "] ", inputs);
   });
   page.waitForNavigation({ timeout: 0 });
 
