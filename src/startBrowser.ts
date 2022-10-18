@@ -3,10 +3,7 @@ const puppeteer: PuppeteerNode = require("puppeteer");
 
 async function startBrowser() {
   try {
-    console.log(
-      "[" + Date.now().toLocaleString("fr") + "] ",
-      "opening browser..."
-    );
+    console.log("[" + moment().format() + "] ", "opening browser...");
     const browser: Browser = await puppeteer.launch({
       headless: true,
       defaultViewport: null,
@@ -20,10 +17,7 @@ async function startBrowser() {
       browser?.close();
       process.exit();
     });
-    console.log(
-      "[" + Date.now().toLocaleString("fr") + "] ",
-      "browser opened !"
-    );
+    console.log("[" + moment().format() + "] ", "browser opened !");
     return browser;
   } catch (err) {
     console.log(err);

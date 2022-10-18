@@ -14,6 +14,7 @@ import { sleep } from "./utils";
 import { now } from "moment";
 import openWhatsapp from "./whatsapp/openWhatsappPage";
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+import moment from "moment";
 
 let browser: Browser | undefined;
 
@@ -52,13 +53,9 @@ async function login() {
     timeout: 0,
   });
 
-  console.log(
-    "[" + Date.now().toLocaleString("fr") + "] ",
-    "I am in ",
-    BASE_URL
-  );
+  console.log("[" + moment().format() + "] ", "I am in ", BASE_URL);
   await sleep(3000);
-  console.log("[" + Date.now().toLocaleString("fr") + "] ", "About to connect");
+  console.log("[" + moment().format() + "] ", "About to connect");
   await page.evaluate(() => {
     const elements = document.getElementsByTagName("input");
     elements[1].value = "s.dupont@imperialnegoce.fr";
@@ -68,38 +65,32 @@ async function login() {
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
-  console.log(
-    "[" + Date.now().toLocaleString("fr") + "] ",
-    "About to go to book_url"
-  );
+  console.log("[" + moment().format() + "] ", "About to go to book_url");
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
   await sleep(3000);
 
-  console.log("[" + Date.now().toLocaleString("fr") + "] ", "Going to get div");
+  console.log("[" + moment().format() + "] ", "Going to get div");
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     divs[17].click();
   });
   page.waitForNavigation({ timeout: 0 });
-  console.log(
-    "[" + Date.now().toLocaleString("fr") + "] ",
-    "Going to get input"
-  );
+  console.log("[" + moment().format() + "] ", "Going to get input");
   await sleep(3000);
 
   await page.evaluate(() => {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
-    console.log("[" + Date.now().toLocaleString("fr") + "] ", inputs);
+    console.log("[" + moment().format() + "] ", inputs);
   });
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
   console.log(
-    "[" + Date.now().toLocaleString("fr") + "] ",
+    "[" + moment().format() + "] ",
     "Going to return page, I am connected"
   );
 
@@ -108,10 +99,7 @@ async function login() {
 
 async function checkSport(page: Page, sport: ISport) {
   try {
-    console.log(
-      "[" + Date.now().toLocaleString("fr") + "] ",
-      "Let's check " + sport.name
-    );
+    console.log("[" + moment().format() + "] ", "Let's check " + sport.name);
     await sleep(2000);
     await page.goto(sport.url, {
       timeout: 0,
@@ -124,7 +112,7 @@ async function checkSport(page: Page, sport: ISport) {
     });
 
     console.log(
-      "[" + Date.now().toLocaleString("fr") + "] ",
+      "[" + moment().format() + "] ",
       "There are ",
       length,
       "slots",
@@ -135,11 +123,7 @@ async function checkSport(page: Page, sport: ISport) {
     if (length > sport.lastValue) {
       sport.lastValue = length;
       return true;
-    } else
-      console.log(
-        "[" + Date.now().toLocaleString("fr") + "] ",
-        "Nothing to do here"
-      );
+    } else console.log("[" + moment().format() + "] ", "Nothing to do here");
 
     sport.lastValue = length;
     await sleep(2 * 1000);
@@ -161,24 +145,15 @@ async function main() {
       let page = await login();
       for (let i = 0; i < sports.length; i++) {
         if (await checkSport(page, sports[i])) {
-          console.log(
-            "[" + Date.now().toLocaleString("fr") + "] ",
-            "New slot identified !"
-          );
+          console.log("[" + moment().format() + "] ", "New slot identified !");
 
           chat.sendMessage("Maman tu peux réserver ton sport !");
           chat.sendMessage(sportIMG);
         }
       }
-      console.log(
-        "[" + Date.now().toLocaleString("fr") + "] ",
-        "everything went well"
-      );
+      console.log("[" + moment().format() + "] ", "everything went well");
     } catch (err) {
-      console.log(
-        "[" + Date.now().toLocaleString("fr") + "] ",
-        "issue in the process"
-      );
+      console.log("[" + moment().format() + "] ", "issue in the process");
       console.log(now(), err);
       continue;
     }
@@ -186,16 +161,9 @@ async function main() {
     try {
       await browser?.close();
     } catch (e) {
-      console.log(
-        "[" + Date.now().toLocaleString("fr") + "] ",
-        "error while closing: ",
-        e
-      );
+      console.log("[" + moment().format() + "] ", "error while closing: ", e);
     }
-    console.log(
-      "[" + Date.now().toLocaleString("fr") + "] ",
-      "Time to sleep 10 minutes"
-    );
+    console.log("[" + moment().format() + "] ", "Time to sleep 10 minutes");
     await sleep(10 * 60 * 1000);
   }
 }
