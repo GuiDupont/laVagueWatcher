@@ -52,7 +52,11 @@ async function login() {
     timeout: 0,
   });
 
-  console.log("[" + Date.now() + "] ", "I am in ", BASE_URL);
+  console.log(
+    "[" + Date.now().toLocaleString("fr") + "] ",
+    "I am in ",
+    BASE_URL
+  );
   await sleep(3000);
   console.log("[" + Date.now().toLocaleString("fr") + "] ", "About to connect");
   await page.evaluate(() => {
@@ -64,31 +68,40 @@ async function login() {
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
-  console.log("[" + Date.now() + "] ", "About to go to book_url");
+  console.log(
+    "[" + Date.now().toLocaleString("fr") + "] ",
+    "About to go to book_url"
+  );
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
   await sleep(3000);
 
-  console.log("[" + Date.now() + "] ", "Going to get div");
+  console.log("[" + Date.now().toLocaleString("fr") + "] ", "Going to get div");
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     divs[17].click();
   });
   page.waitForNavigation({ timeout: 0 });
-  console.log("[" + Date.now() + "] ", "Going to get input");
+  console.log(
+    "[" + Date.now().toLocaleString("fr") + "] ",
+    "Going to get input"
+  );
   await sleep(3000);
 
   await page.evaluate(() => {
     const inputs = document.getElementsByTagName("input");
     inputs[1].click();
-    console.log("[" + Date.now() + "] ", inputs);
+    console.log("[" + Date.now().toLocaleString("fr") + "] ", inputs);
   });
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
-  console.log("[" + Date.now() + "] ", "Going to return page, I am connected");
+  console.log(
+    "[" + Date.now().toLocaleString("fr") + "] ",
+    "Going to return page, I am connected"
+  );
 
   return page;
 }
