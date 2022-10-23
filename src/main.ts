@@ -144,8 +144,10 @@ async function main() {
         if (await checkSport(page, sports[i])) {
           log(["New slot identified !"]);
 
-          chat.sendMessage("Maman tu peux réserver ton sport !");
-          chat.sendMessage(sportIMG);
+          await chat.sendMessage("Maman tu peux réserver ton sport !");
+          await chat.sendMessage(sportIMG);
+          log(["Time to sleep 2 days"]);
+          await sleep(2 * 24 * 60 * 60 * 1000);
         }
       }
       log(["everything went well"]);
