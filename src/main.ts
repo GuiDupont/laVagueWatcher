@@ -14,7 +14,7 @@ import { sleep } from "./utils";
 import { now } from "moment";
 import openWhatsapp from "./whatsapp/openWhatsappPage";
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import moment from "moment";
+import { log } from "./logging";
 
 let browser: Browser | undefined;
 
@@ -53,9 +53,9 @@ async function login() {
     timeout: 0,
   });
 
-  console.log("[" + moment().format() + "] ", "I am in ", BASE_URL);
+  log(["I am in ", BASE_URL]);
   await sleep(3000);
-  console.log("[" + moment().format() + "] ", "About to connect");
+  log(["About to connect"]);
   await page.evaluate(() => {
     const elements = document.getElementsByTagName("input");
     elements[1].value = "s.dupont@imperialnegoce.fr";
@@ -65,20 +65,20 @@ async function login() {
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
-  console.log("[" + moment().format() + "] ", "About to go to book_url");
+  log(["About to go to book_url"]);
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
   await sleep(3000);
 
-  console.log("[" + moment().format() + "] ", "Going to get div");
+  log(["Going to get div"]);
   await page.evaluate(() => {
     const divs = document.getElementsByTagName("div");
     divs[17].click();
   });
   page.waitForNavigation({ timeout: 0 });
-  console.log("[" + moment().format() + "] ", "Going to get input");
+  log(["Going to get input"]);
   await sleep(3000);
 
   await page.evaluate(() => {
@@ -88,41 +88,37 @@ async function login() {
   page.waitForNavigation({ timeout: 0 });
 
   await sleep(3000);
-  console.log(
-    "[" + moment().format() + "] ",
-    "Going to return page, I am connected"
-  );
+  log(["Going to return page, I am connected"]);
 
   return page;
 }
 
 async function checkSport(page: Page, sport: ISport) {
   try {
-    console.log("[" + moment().format() + "] ", "Let's check " + sport.name);
+    log(["Let's check " + sport.name]);
     await sleep(2000);
-    await page.goto(sport.url, {
+    const res = await page.goto(sport.url, {
       timeout: 0,
     });
+    log([res]);
     await sleep(1000);
+    log(["After goto"]);
 
-    const selector = await page.waitForSelector("#liste_periodes");
+    const selector = await page.waitForSelector("#liste_periodes", {
+      timeout: 0,
+    });
+    log(["Selector received"]);
+
     let length = await selector?.evaluate((el) => {
       return el.children.length;
     });
 
-    console.log(
-      "[" + moment().format() + "] ",
-      "There are ",
-      length,
-      "slots",
-      "last value is",
-      sport.lastValue
-    );
+    log(["There are ", length, "slots", "last value is", sport.lastValue]);
     if (length === undefined) length = sport.lastValue;
     if (length > sport.lastValue) {
       sport.lastValue = length;
       return true;
-    } else console.log("[" + moment().format() + "] ", "Nothing to do here");
+    } else log(["Nothing to do here"]);
 
     sport.lastValue = length;
     await sleep(2 * 1000);
@@ -144,15 +140,15 @@ async function main() {
       let page = await login();
       for (let i = 0; i < sports.length; i++) {
         if (await checkSport(page, sports[i])) {
-          console.log("[" + moment().format() + "] ", "New slot identified !");
+          log(["New slot identified !"]);
 
           chat.sendMessage("Maman tu peux réserver ton sport !");
           chat.sendMessage(sportIMG);
         }
       }
-      console.log("[" + moment().format() + "] ", "everything went well");
+      log(["everything went well"]);
     } catch (err) {
-      console.log("[" + moment().format() + "] ", "issue in the process");
+      log(["issue in the process"]);
       console.log(now(), err);
       continue;
     }
@@ -160,9 +156,9 @@ async function main() {
     try {
       await browser?.close();
     } catch (e) {
-      console.log("[" + moment().format() + "] ", "error while closing: ", e);
+      log(["error while closing: ", e]);
     }
-    console.log("[" + moment().format() + "] ", "Time to sleep 10 minutes");
+    log(["Time to sleep 10 minutes"]);
     await sleep(10 * 60 * 1000);
   }
 }
