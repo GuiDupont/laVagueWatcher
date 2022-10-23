@@ -113,7 +113,9 @@ async function checkSport(page: Page, sport: ISport) {
       return el.children.length;
     });
 
-    log(["There are ", length, "slots", "last value is", sport.lastValue]);
+    log([
+      "There are " + length + " slots " + " last value is " + sport.lastValue,
+    ]);
     if (length === undefined) length = sport.lastValue;
     if (length > sport.lastValue) {
       sport.lastValue = length;
