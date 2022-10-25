@@ -131,7 +131,7 @@ async function checkSport(page: Page, sport: ISport) {
 
 async function main() {
   log(["Let's go"]);
-  const whatsapp = await openWhatsapp(true);
+  const whatsapp = await openWhatsapp(false);
   const [maman] = (await whatsapp.getContacts()).filter(
     (contact) => contact.number == "33614464693"
   );
