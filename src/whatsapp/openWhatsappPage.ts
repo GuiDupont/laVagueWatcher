@@ -3,6 +3,7 @@ import qrcode from "qrcode-terminal";
 import { log } from "../logging";
 
 async function openWhatsapp(headLess: boolean) {
+  log(["Parametting Whatsapp"]);
   const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
@@ -33,6 +34,9 @@ async function openWhatsapp(headLess: boolean) {
   client.on("ready", async () => {
     console.log("READY");
   });
+
+  log(["Initializing Whatsapp"]);
+
   await client.initialize();
   return client;
 }
