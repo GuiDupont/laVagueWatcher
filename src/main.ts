@@ -137,6 +137,7 @@ async function main() {
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
+  await chat.sendMessage("Petit test !");
   while (1) {
     try {
       browser = await startBrowser();
