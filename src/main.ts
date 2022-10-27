@@ -132,7 +132,7 @@ async function checkSport(page: Page, sport: ISport) {
 
 async function main() {
   log(["Let's go"]);
-  const whatsapp = await openWhatsapp(false);
+  const whatsapp = await openWhatsapp(true);
   const [lifeCheck] = (await whatsapp.getChats()).filter(
     (info) => info.name === "liveCheck"
   );
@@ -143,8 +143,9 @@ async function main() {
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
+
   while (1) {
-    if (moment().hours() > 22) {
+    if (moment().hours() >= 22) {
       await sleepHours(8);
       await lifeCheck.sendMessage("Let's get back to work");
     }
