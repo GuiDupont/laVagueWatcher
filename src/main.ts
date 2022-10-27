@@ -132,11 +132,19 @@ async function checkSport(page: Page, sport: ISport) {
 
 async function main() {
   log(["Let's go"]);
+  moment.locale("fr");
+  console.log(
+    moment().format("dddd"),
+    "Let's get back to work" + moment().day().toLocaleString()
+  );
   const whatsapp = await openWhatsapp(true);
   const [lifeCheck] = (await whatsapp.getChats()).filter(
     (info) => info.name === "liveCheck"
   );
-  await lifeCheck.sendMessage("Let's get back to work");
+
+  const msg =
+    "Let's get back to work. " + moment().format("dddd") + " " + moment().day();
+  await lifeCheck.sendMessage(msg);
 
   const [maman] = (await whatsapp.getContacts()).filter(
     (contact) => contact.number == "33614464693"
