@@ -1,5 +1,6 @@
 import moment from "moment";
 import { Browser, PuppeteerNode } from "puppeteer";
+import { getPath } from "./utils";
 const puppeteer: PuppeteerNode = require("puppeteer");
 
 async function startBrowser() {
@@ -9,9 +10,7 @@ async function startBrowser() {
       headless: true,
       defaultViewport: null,
       // userDataDir: "./chrome_data",
-      executablePath: "/usr/bin/chromium-browser",
-      // executablePath:
-      //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      executablePath: getPath(),
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     process.on("SIGINT", function () {

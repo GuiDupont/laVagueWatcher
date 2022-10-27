@@ -9,12 +9,13 @@ import {
   CT_URL,
 } from "./constants";
 import startBrowser from "./startBrowser";
-import { sleep } from "./utils";
+import { sleep, sleepHours } from "./utils";
 // import * as wbm from "./api";
 import { now } from "moment";
 import openWhatsapp from "./whatsapp/openWhatsappPage";
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import { log } from "./logging";
+import moment from "moment";
 
 let browser: Browser | undefined;
 
@@ -131,25 +132,32 @@ async function checkSport(page: Page, sport: ISport) {
 
 async function main() {
   log(["Let's go"]);
-  const whatsapp = await openWhatsapp(true);
+  const whatsapp = await openWhatsapp(false);
+  const [lifeCheck] = (await whatsapp.getChats()).filter(
+    (info) => info.name === "liveCheck"
+  );
+  await lifeCheck.sendMessage("Let's get back to work");
+
   const [maman] = (await whatsapp.getContacts()).filter(
     (contact) => contact.number == "33614464693"
   );
   const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
   const chat = await maman.getChat();
-  await chat.sendMessage("Petit test !");
   while (1) {
+    if (moment().hours() > 22) {
+      await sleepHours(8);
+      await lifeCheck.sendMessage("Let's get back to work");
+    }
     try {
       browser = await startBrowser();
       let page = await login();
       for (let i = 0; i < sports.length; i++) {
         if (await checkSport(page, sports[i])) {
           log(["New slot identified !"]);
-
           await chat.sendMessage("Maman tu peux réserver ton sport !");
           await chat.sendMessage(sportIMG);
           log(["Time to sleep 2 days"]);
-          await sleep(2 * 24 * 60 * 60 * 1000);
+          await sleepHours(2 * 24);
         }
       }
       log(["everything went well"]);

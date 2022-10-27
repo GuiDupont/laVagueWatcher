@@ -1,6 +1,7 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import { log } from "../logging";
+import { getPath } from "../utils";
 
 async function openWhatsapp(headLess: boolean) {
   log(["Parametting Whatsapp"]);
@@ -8,7 +9,7 @@ async function openWhatsapp(headLess: boolean) {
     authStrategy: new LocalAuth(),
     puppeteer: {
       headless: headLess,
-      executablePath: "/usr/bin/chromium-browser",
+      executablePath: getPath(),
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     },
   });
