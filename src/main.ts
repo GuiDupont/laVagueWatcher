@@ -151,7 +151,9 @@ async function main() {
     if (moment().hours() >= 22) {
       log(["Time to sleep 8 hours"]);
       await sleepHours(8);
-      await lifeCheck.sendMessage("Let's get back to work");
+      await lifeCheck.sendMessage(
+        moment().format("[Let's get back to work] dddd Do")
+      );
     }
     try {
       browser = await startBrowser();
