@@ -182,7 +182,9 @@ async function main() {
         log(["error while closing: ", e]);
       }
       const time_to_sleep = sports[0].lastValue === 2 ? 10 : 60;
-      log([`Time to sleep ${time_to_sleep} minutes`]);
+      log([
+        `Time to sleep ${time_to_sleep} minutes cause ${sports[0].lastValue}`,
+      ]);
       await sleep(time_to_sleep * 60 * 1000);
     }
   } catch (e) {}
