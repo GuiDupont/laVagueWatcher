@@ -27,6 +27,13 @@ async function openWhatsapp(headLess: boolean) {
     console.log("AUTHENTICATED");
   });
 
+  client.on("message", (msg) => {
+    console.log("new msg", msg);
+    if (msg.body == "!ping") {
+      msg.reply("pong");
+    }
+  });
+
   client.on("auth_failure", (msg) => {
     // Fired if session restore was unsuccessful
     console.error("AUTHENTICATION FAILURE", msg);

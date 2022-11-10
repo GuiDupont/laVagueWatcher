@@ -137,6 +137,7 @@ async function main() {
   const [lifeCheck] = (await whatsapp.getChats()).filter(
     (info) => info.name === "liveCheck"
   );
+
   await lifeCheck.sendMessage(
     moment().format("[Let's get back to work] dddd Do")
   );
@@ -164,7 +165,7 @@ async function main() {
           await chat.sendMessage("Maman tu peux réserver ton sport !");
           await chat.sendMessage(sportIMG);
           log(["Time to sleep 2 days"]);
-          await sleepHours(2 * 24);
+          await sleepHours(3 * 24);
         }
       }
       log(["everything went well"]);
@@ -179,8 +180,9 @@ async function main() {
     } catch (e) {
       log(["error while closing: ", e]);
     }
-    log(["Time to sleep 10 minutes"]);
-    await sleep(10 * 60 * 1000);
+    const time_to_sleep = sports[0].lastValue === 3 ? 60 : 10;
+    log([`Time to sleep ${time_to_sleep} minutes`]);
+    await sleep(time_to_sleep * 60 * 1000);
   }
 }
 
