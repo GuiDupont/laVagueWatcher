@@ -131,59 +131,61 @@ async function checkSport(page: Page, sport: ISport) {
 }
 
 async function main() {
-  log(["Let's go"]);
-  moment.locale("fr");
-  const whatsapp = await openWhatsapp(true);
-  const [lifeCheck] = (await whatsapp.getChats()).filter(
-    (info) => info.name === "liveCheck"
-  );
+  try {
+    log(["Let's go"]);
+    moment.locale("fr");
+    const whatsapp = await openWhatsapp(true);
+    const [lifeCheck] = (await whatsapp.getChats()).filter(
+      (info) => info.name === "liveCheck"
+    );
 
-  await lifeCheck.sendMessage(
-    moment().format("[Let's get back to work] dddd Do")
-  );
+    await lifeCheck.sendMessage(
+      moment().format("[Let's get back to work] dddd Do")
+    );
 
-  const [maman] = (await whatsapp.getContacts()).filter(
-    (contact) => contact.number == "33614464693"
-  );
-  const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
-  const chat = await maman.getChat();
+    const [maman] = (await whatsapp.getContacts()).filter(
+      (contact) => contact.number == "33614464693"
+    );
+    const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
+    const chat = await maman.getChat();
 
-  while (1) {
-    if (moment().hours() >= 22) {
-      log(["Time to sleep 8 hours"]);
-      await sleepHours(8);
-      await lifeCheck.sendMessage(
-        moment().format("[Let's get back to work] dddd Do")
-      );
-    }
-    try {
-      browser = await startBrowser();
-      let page = await login();
-      for (let i = 0; i < sports.length; i++) {
-        if (await checkSport(page, sports[i])) {
-          log(["New slot identified !"]);
-          await chat.sendMessage("Maman tu peux réserver ton sport !");
-          await chat.sendMessage(sportIMG);
-          log(["Time to sleep 2 days"]);
-          await sleepHours(3 * 24);
-        }
+    while (1) {
+      if (moment().hours() >= 22) {
+        log(["Time to sleep 8 hours"]);
+        await sleepHours(8);
+        await lifeCheck.sendMessage(
+          moment().format("[Let's get back to work] dddd Do")
+        );
       }
-      log(["everything went well"]);
-    } catch (err) {
-      log(["issue in the process"]);
-      console.log(now(), err);
-      continue;
+      try {
+        browser = await startBrowser();
+        let page = await login();
+        for (let i = 0; i < sports.length; i++) {
+          if (await checkSport(page, sports[i])) {
+            log(["New slot identified !"]);
+            await chat.sendMessage("Maman tu peux réserver ton sport !");
+            await chat.sendMessage(sportIMG);
+            log(["Time to sleep 2 days"]);
+            await sleepHours(3 * 24);
+          }
+        }
+        log(["everything went well"]);
+      } catch (err) {
+        log(["issue in the process"]);
+        console.log(now(), err);
+        continue;
+      }
+      await sleep(10000);
+      try {
+        await browser?.close();
+      } catch (e) {
+        log(["error while closing: ", e]);
+      }
+      const time_to_sleep = sports[0].lastValue === 2 ? 10 : 60;
+      log([`Time to sleep ${time_to_sleep} minutes`]);
+      await sleep(time_to_sleep * 60 * 1000);
     }
-    await sleep(10000);
-    try {
-      await browser?.close();
-    } catch (e) {
-      log(["error while closing: ", e]);
-    }
-    const time_to_sleep = sports[0].lastValue === 3 ? 60 : 10;
-    log([`Time to sleep ${time_to_sleep} minutes`]);
-    await sleep(time_to_sleep * 60 * 1000);
-  }
+  } catch (e) {}
 }
 
 main()
