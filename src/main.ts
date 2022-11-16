@@ -105,8 +105,8 @@ async function checkSport(page: Page, sport: ISport) {
     await sleep(1000);
     log(["After goto"]);
 
-    const selector = await page.waitForSelector("#liste_periode", {
-      timeout: 2,
+    const selector = await page.waitForSelector("#liste_periodes", {
+      timeout: 0,
     });
     log(["Selector received"]);
 
