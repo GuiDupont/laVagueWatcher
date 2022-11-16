@@ -160,6 +160,7 @@ async function main() {
       try {
         browser = await startBrowser();
         let page = await login();
+        await lifeCheck.sendMessage(moment().format("dddd Do h:mm:ss a"));
         for (let i = 0; i < sports.length; i++) {
           if (await checkSport(page, sports[i])) {
             log(["New slot identified !"]);
