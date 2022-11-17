@@ -28,8 +28,7 @@ async function openWhatsapp(headLess: boolean) {
   });
 
   client.on("message", (msg) => {
-    console.log("new msg", msg);
-    if (msg.body == "!ping") {
+    if (msg.body == "ping") {
       msg.reply("pong");
     }
   });

@@ -152,6 +152,7 @@ async function main() {
     while (1) {
       if (moment().hours() >= 22) {
         log(["Time to sleep 8 hours"]);
+        await lifeCheck.sendMessage("Good night");
         await sleepHours(8);
         await lifeCheck.sendMessage(
           moment().format("[Let's get back to work] dddd Do")
@@ -160,19 +161,22 @@ async function main() {
       try {
         browser = await startBrowser();
         let page = await login();
-        await lifeCheck.sendMessage(moment().format("dddd Do h:mm:ss a"));
+        await lifeCheck.sendMessage(moment().format("👍"));
         for (let i = 0; i < sports.length; i++) {
           if (await checkSport(page, sports[i])) {
             log(["New slot identified !"]);
-            await chat.sendMessage("Maman tu peux réserver ton sport !");
-            await chat.sendMessage(sportIMG);
-            log(["Time to sleep 2 days"]);
+            await chat.sendMessage(
+              "[LA VAGUE] Maman tu peux réserver ton sport !"
+            );
+            // await chat.sendMessage(sportIMG);
+            await lifeCheck.sendMessage(
+              moment().format("Time to sleep 2 days")
+            );
             await sleepHours(3 * 24);
           }
         }
         log(["everything went well"]);
       } catch (err) {
-        log(["issue in the process"]);
         console.log(now(), err);
       }
       await sleep(10000);
@@ -182,9 +186,8 @@ async function main() {
         log(["error while closing: ", e]);
       }
       const time_to_sleep = sports[0].lastValue === 2 ? 10 : 60;
-      log([
-        `Time to sleep ${time_to_sleep} minutes cause ${sports[0].lastValue}`,
-      ]);
+      log([`Time to sleep ${time_to_sleep} minutes`]);
+
       await sleep(time_to_sleep * 60 * 1000);
     }
   } catch (e) {}
