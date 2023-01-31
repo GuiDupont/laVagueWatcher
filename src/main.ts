@@ -10,12 +10,15 @@ import {
 } from "./constants";
 import startBrowser from "./startBrowser";
 import { sleep, sleepHours } from "./utils";
-// import * as wbm from "./api";
+
 import { now } from "moment";
-import openWhatsapp from "./whatsapp/openWhatsappPage";
-import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+
 import { log } from "./logging";
 import moment from "moment";
+import { activateBot, sendMessage } from "./telegramBot";
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+dotenv.config();
 
 let browser: Browser | undefined;
 
@@ -134,45 +137,26 @@ async function main() {
   try {
     log(["Let's go"]);
     moment.locale("fr");
-    const whatsapp = await openWhatsapp(false);
-    console.log("coucou");
-    const [lifeCheck] = (await whatsapp.getChats()).filter(
-      (info) => info.name === "liveCheck"
-    );
+    console.log(process.env.CONV_TOKEN);
+    const bot = await activateBot();
 
-    await lifeCheck.sendMessage(
-      moment().format("[Let's get back to work] dddd Do")
-    );
-
-    const [maman] = (await whatsapp.getContacts()).filter(
-      (contact) => contact.number == "33614464693"
-    );
-    const sportIMG = MessageMedia.fromFilePath("assets/sport.jpeg");
-    const chat = await maman.getChat();
+    await sendMessage(moment().format("[Let's get back to work] dddd Do"));
 
     while (1) {
       if (moment().hours() >= 22) {
         log(["Time to sleep 8 hours"]);
-        await lifeCheck.sendMessage("Good night");
+        await sendMessage("Good night");
         await sleepHours(8);
-        await lifeCheck.sendMessage(
-          moment().format("[Let's get back to work] dddd Do")
-        );
+        await sendMessage(moment().format("[Let's get back to work] dddd Do"));
       }
       try {
         browser = await startBrowser();
         let page = await login();
-        await lifeCheck.sendMessage(moment().format("👍👍"));
         for (let i = 0; i < sports.length; i++) {
           if (await checkSport(page, sports[i])) {
             log(["New slot identified !"]);
-            await chat.sendMessage(
-              "[LA VAGUE] Maman tu peux réserver ton sport !"
-            );
-            await chat.sendMessage(sportIMG);
-            await lifeCheck.sendMessage(
-              moment().format("Time to sleep 2 days")
-            );
+            await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
+            await sendMessage(moment().format("Time to sleep 3 days"));
             await sleepHours(3 * 24);
           }
         }
@@ -188,6 +172,7 @@ async function main() {
       }
       const time_to_sleep = sports[0].lastValue === 2 ? 10 : 60;
       log([`Time to sleep ${time_to_sleep} minutes`]);
+      // await sendMessage(`Time to sleep ${time_to_sleep} minutes`);
 
       await sleep(time_to_sleep * 60 * 1000);
     }
