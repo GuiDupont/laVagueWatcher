@@ -134,7 +134,8 @@ async function main() {
   try {
     log(["Let's go"]);
     moment.locale("fr");
-    const whatsapp = await openWhatsapp(true);
+    const whatsapp = await openWhatsapp(false);
+    console.log("coucou");
     const [lifeCheck] = (await whatsapp.getChats()).filter(
       (info) => info.name === "liveCheck"
     );
@@ -161,14 +162,14 @@ async function main() {
       try {
         browser = await startBrowser();
         let page = await login();
-        await lifeCheck.sendMessage(moment().format("👍"));
+        await lifeCheck.sendMessage(moment().format("👍👍"));
         for (let i = 0; i < sports.length; i++) {
           if (await checkSport(page, sports[i])) {
             log(["New slot identified !"]);
             await chat.sendMessage(
               "[LA VAGUE] Maman tu peux réserver ton sport !"
             );
-            // await chat.sendMessage(sportIMG);
+            await chat.sendMessage(sportIMG);
             await lifeCheck.sendMessage(
               moment().format("Time to sleep 2 days")
             );

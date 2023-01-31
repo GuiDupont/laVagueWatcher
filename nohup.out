@@ -1,0 +1,30 @@
+yarn run v1.22.19
+warning ../../package.json: No license field
+$ ts-node src/main.ts
+[2023-01-31T14:25:15+01:00]  Let's go
+[2023-01-31T14:25:15+01:00]  Parametting Whatsapp
+[2023-01-31T14:25:15+01:00]  Initializing Whatsapp
+LOADING SCREEN 0 WhatsApp
+LOADING SCREEN 0 Chargement de vos discussions
+LOADING SCREEN 0 Chargement de vos discussions [0 %]
+LOADING SCREEN 1 Chargement de vos discussions [1 %]
+LOADING SCREEN 4 Chargement de vos discussions [4 %]
+LOADING SCREEN 8 Chargement de vos discussions [8 %]
+LOADING SCREEN 14 Chargement de vos discussions [14 %]
+LOADING SCREEN 21 Chargement de vos discussions [21 %]
+LOADING SCREEN 29 Chargement de vos discussions [29 %]
+LOADING SCREEN 37 Chargement de vos discussions [37 %]
+LOADING SCREEN 42 Chargement de vos discussions [42 %]
+LOADING SCREEN 52 Chargement de vos discussions [52 %]
+LOADING SCREEN 58 Chargement de vos discussions [58 %]
+LOADING SCREEN 65 Chargement de vos discussions [65 %]
+LOADING SCREEN 67 Chargement de vos discussions [67 %]
+LOADING SCREEN 68 Chargement de vos discussions [68 %]
+LOADING SCREEN 72 Chargement de vos discussions [72 %]
+LOADING SCREEN 77 Chargement de vos discussions [77 %]
+LOADING SCREEN 84 Chargement de vos discussions [84 %]
+LOADING SCREEN 89 Chargement de vos discussions [89 %]
+LOADING SCREEN 98 Chargement de vos discussions [98 %]
+LOADING SCREEN 100 Chargement de vos discussions [100 %]
+error Command failed with signal "SIGTERM".
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
