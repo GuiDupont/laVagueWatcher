@@ -15,7 +15,7 @@ import { now } from "moment";
 
 import { log } from "./logging";
 import moment from "moment";
-import { activateBot, sendMessage } from "./telegramBot";
+import { activateBot, sendMessage, sendMessageManagement } from "./telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 dotenv.config();
@@ -140,14 +140,18 @@ async function main() {
     console.log(process.env.CONV_TOKEN);
     const bot = await activateBot();
 
-    await sendMessage(moment().format("[Let's get back to work] dddd Do"));
+    await sendMessageManagement(
+      moment().format("[Let's get back to work] dddd Do")
+    );
 
     while (1) {
       if (moment().hours() >= 22) {
         log(["Time to sleep 8 hours"]);
-        await sendMessage("Good night");
+        await sendMessageManagement("Good night");
         await sleepHours(8);
-        await sendMessage(moment().format("[Let's get back to work] dddd Do"));
+        await sendMessageManagement(
+          moment().format("[Let's get back to work] dddd Do")
+        );
       }
       try {
         browser = await startBrowser();
@@ -156,7 +160,7 @@ async function main() {
           if (await checkSport(page, sports[i])) {
             log(["New slot identified !"]);
             await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
-            await sendMessage(moment().format("Time to sleep 3 days"));
+            // await sendMessage(moment().format("Time to sleep 3 days"));
             await sleepHours(3 * 24);
           }
         }
