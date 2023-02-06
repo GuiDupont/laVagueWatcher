@@ -20,6 +20,11 @@ export async function activateBot() {
     ctx.reply(`ok`);
   });
 
+  bot.command("/test", async () => {
+    sendMessage("test");
+    // ctx.reply(`ok`);
+  });
+
   bot.command("/conv_id", (ctx) => ctx.reply(ctx.chat.id.toString()));
 
   bot.launch();
