@@ -1,11 +1,12 @@
 import moment from "moment";
 import { Browser, PuppeteerNode } from "puppeteer";
+import { log } from "./logging";
 import { getPath } from "./utils";
 const puppeteer: PuppeteerNode = require("puppeteer");
 
 async function startBrowser() {
   try {
-    console.log("[" + moment().format() + "] ", "opening browser...");
+    log(["opening browser..."]);
     const browser: Browser = await puppeteer.launch({
       headless: true,
       defaultViewport: null,
