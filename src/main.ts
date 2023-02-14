@@ -54,17 +54,17 @@ async function main() {
         for (let i = 0; i < sports.length; i++) {
           if (sports[i].ready) continue;
           await checkSport(page, sports[i]);
-
-          log([sports[i].name, sports[i].lastValue]);
           if (!sports[i].ready) ready = false;
         }
 
         setUpInteractions(bot, sports);
 
         if (ready) {
-          await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
+          await sendMessage(
+            "[LA VAGUE] Maman tu peux réserver tes séances de /sports !"
+          );
           if (!page.isClosed) await page.close();
-
+          if (browser) await browser?.close();
           await sleepHours(4 * 24);
         }
         log("Everything went well");
