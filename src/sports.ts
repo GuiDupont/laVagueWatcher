@@ -1,0 +1,62 @@
+import {
+  BODYCOMBAT_URL,
+  BODYPUMP_URL,
+  CAF_URL,
+  CT_URL,
+  RPM_URL,
+  ZUMBA_URL,
+} from "./constants";
+import { ISport } from "./types";
+
+export const sports = [
+  {
+    url: CT_URL,
+    name: "Circuit Training",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195335",
+    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
+    id: 62,
+    niveau: 126,
+    ready: false,
+  },
+  {
+    url: RPM_URL,
+    name: "RPM",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195387",
+    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
+    id: 24,
+    niveau: 0,
+    ready: false,
+  },
+  {
+    url: ZUMBA_URL,
+    name: "Zumba",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195517",
+    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
+    id: 25,
+    niveau: 0,
+    ready: false,
+  },
+  {
+    url: BODYPUMP_URL,
+    name: "Body Pump",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195413",
+    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
+    id: 32,
+    niveau: 0,
+    ready: false,
+  },
+  {
+    url: CAF_URL,
+    name: "CAF",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195361",
+    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
+    id: 84,
+    niveau: 106,
+    ready: false,
+  },
+] as ISport[];

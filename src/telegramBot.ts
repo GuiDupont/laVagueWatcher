@@ -3,7 +3,13 @@ import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-
 import { Update } from "telegraf/typings/core/types/typegram";
 import { ISeance, ISport } from "./types";
 import { ethers } from "ethers";
-import { formatDayDate } from "./utils";
+import { formatDayDate, sleep } from "./utils";
+import startBrowser from "./startBrowser";
+import { log } from "./logging";
+import { goToSportMainPage, loginLaVague } from "./watcher";
+import { Page } from "puppeteer";
+import { CONFIRM_BOOK_URL } from "./constants";
+import { sports } from "./sports";
 
 dotenv.config();
 
@@ -37,12 +43,60 @@ export async function activateBot() {
 
   bot.command("/conv_id", (ctx) => ctx.reply(ctx.chat.id.toString()));
 
-  bot.command("/Enregistrer", (ctx) => {
-    return ctx.reply("NOT YET DONE");
+  bot.command("/réserver", (ctx) => {
+    return ctx.reply(
+      `Sélectionnez un sport svp`,
+      Markup.keyboard(sports.map((s) => "/" + s.name))
+    );
+  });
+
+  bot.command("/sports", (ctx) => {
+    return ctx.reply(
+      `Sélectionnez un sport svp`,
+      Markup.keyboard([
+        sports
+          .filter((v, i, array) => i <= array.length / 2)
+          .map((s) => "/" + s.name),
+        sports
+          .filter((v, i, array) => i > array.length / 2)
+          .map((s) => "/" + s.name),
+      ])
+    );
   });
 
   bot.launch();
   return bot;
+}
+
+async function bookASeance(page: Page, sport: ISport, i: number) {
+  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.goto(sport.next_period.url!, {
+    timeout: 0,
+  });
+  await page.waitForNetworkIdle({ timeout: 0 });
+
+  const buttons = await page.$$("table tbody tr td table tbody tr td img");
+
+  await buttons[2 + i * 3].click();
+
+  const prenom = await page.waitForSelector('input[name="prenom"]', {
+    timeout: 0,
+  });
+  await prenom?.type(process.env.PRENOM!);
+  const nom = await page.waitForSelector('input[id="nom"]', {
+    timeout: 0,
+  });
+  await nom?.type(process.env.NOM!);
+  const validate = await page.waitForSelector(
+    'input[value="Je valide ma réservation"]',
+    {
+      timeout: 0,
+    }
+  );
+  await validate?.click();
+  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.goto(CONFIRM_BOOK_URL, { timeout: 0 });
+  await page.waitForNetworkIdle({ timeout: 0 });
 }
 
 function setUpSeancesInteractions(
@@ -50,14 +104,32 @@ function setUpSeancesInteractions(
   seances: ISeance[],
   sport: ISport
 ) {
-  seances.forEach((s) => {
-    const hash = ethers.id(`/${sport.name}-${s.date}-${s.plage}`).slice(0, 6);
-    bot.command(`/${hash}`, (ctx) => {
-      return ctx.reply(
-        `+ ${sport.name} le ${formatDayDate(s.date)} à ${
-          s.plage
-        }, si c'est bon pour le ${sport.name}, clique sur /Enregistrer.`
-      );
+  seances.forEach((s, i) => {
+    let answer = `Inscription à la séance de ${sport.name} le ${formatDayDate(
+      s.date
+    )} à ${s.plage} validée: --> /sports pour changer de sport`;
+    bot.command(`/${s.hash}`, async (ctx) => {
+      ctx.reply("Inscription en cours... patientez svp");
+      let browser = await startBrowser().catch((e) => {
+        log(["error starting Browser: ", e]);
+        return undefined;
+      });
+      if (!browser) {
+        answer = "Erreur lors de l'inscription";
+        return ctx.reply(answer);
+      }
+      try {
+        let page = await loginLaVague(browser);
+        if (!page.isClosed) await page.close();
+        goToSportMainPage(page, sport!);
+        await bookASeance(page, sport, i);
+        if (browser) await browser.close();
+      } catch (e) {
+        await sendMessageManagement("Error while booking a seance");
+        answer = "Erreur lors de l'inscription";
+        return ctx.reply(answer);
+      }
+      return ctx.reply(answer);
     });
   });
 }
@@ -67,16 +139,33 @@ export function setUpInteractions(
   sports: ISport[]
 ) {
   sports.forEach((sport) => {
-    setUpSeancesInteractions(bot, sports[0].next_period.seances!, sport);
-    const value = sports[0].next_period.seances?.map((s) => {
-      const hash = ethers.id(`/${sport.name}-${s.date}-${s.plage}`).slice(0, 6);
-      return `/${hash}-${formatDayDate(s.date)}-${s.plage}`;
+    const inputs = sport.next_period.seances?.map((s) => {
+      s.hash = ethers.id(`/${sport.name}${s.date} à ${s.plage}`).slice(0, 6);
+      return `/${s.hash} - ${sport.name} ${formatDayDate(
+        s.date
+      )} à ${s.plage.slice(0, 5)} ${s.available ? "➡️" : "❌"}`;
     }) as string[];
-    value.push("/Enregistrer");
-    bot.command("/" + sport.name, (ctx) => {
+
+    setUpSeancesInteractions(bot, sport.next_period.seances!, sport);
+    console.log("configuring :", sport.name);
+    bot.command("/" + sport.name.split(" ")[0], (ctx) => {
+      const filtered = inputs
+        .filter((v) => v.includes("➡️"))
+        .concat(["/sports"]);
+      const edit = inputs.map((input) => {
+        return { text: "test", callback_data: "dadedidodu" };
+      });
+      const final = [];
+      final.push(filtered.slice(0, filtered.length / 2));
+      final.push(filtered.slice(filtered.length / 2, filtered.length));
+
       return ctx.reply(
         `Voici les séances disponibles pour le ${sport.name}`,
-        Markup.keyboard(value)
+        Markup.keyboard(
+          // edit
+          final
+          // inputs.filter((v) => v.includes("➡️")).concat(["/sports"])
+        )
       );
     });
   });

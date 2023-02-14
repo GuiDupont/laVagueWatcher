@@ -20,8 +20,8 @@ import {
   setUpInteractions,
 } from "./telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { checkSport, loginLaVague, sports } from "./watcher";
-import { Markup } from "telegraf";
+import { checkSport, loginLaVague } from "./watcher";
+import { sports } from "./sports";
 
 dotenv.config();
 
@@ -52,7 +52,7 @@ async function main() {
         process.env.program_status = "CHECKING";
         let ready = true;
         for (let i = 0; i < sports.length; i++) {
-          if (sports[i].ready) continue;
+          // if (sports[i].ready) continue;
           if (await checkSport(page, sports[i])) {
             await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
             // await sleepHours(4 * 24);
@@ -75,7 +75,7 @@ async function main() {
       } catch (e) {
         log(["error while closing: ", e]);
       }
-      const time_to_sleep = sports[0].lastValue === 2 ? 1 : 120;
+      const time_to_sleep = sports[0].lastValue === 2 ? 3 : 120;
       await sleepMinutes(time_to_sleep);
     }
   } catch (e) {}

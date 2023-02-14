@@ -1,3 +1,5 @@
+import { ElementHandle } from "puppeteer";
+
 interface ISport {
   url: string;
   lastValue: number;
@@ -12,6 +14,8 @@ interface ISport {
 interface ISeance {
   date: string;
   plage: string;
+  available: boolean;
+  hash?: string;
 }
 interface IPeriod {
   begin_end: string;

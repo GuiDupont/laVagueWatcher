@@ -4,11 +4,11 @@ import { log } from "./logging";
 import { getPath } from "./utils";
 const puppeteer: PuppeteerNode = require("puppeteer");
 
-async function startBrowser() {
+async function startBrowser(headless: boolean = true) {
   try {
     log(["opening browser..."]);
     const browser: Browser = await puppeteer.launch({
-      headless: true,
+      headless: headless,
       defaultViewport: null,
       // userDataDir: "./chrome_data",
       executablePath: getPath(),

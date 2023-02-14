@@ -1,22 +1,7 @@
-import { waitForDebugger } from "inspector";
 import { Browser, ElementHandle, Page } from "puppeteer";
-import { BASE_URL, BOOK_URL, RPM_URL, CRENEAUX_URL } from "./constants";
+import { BASE_URL, BOOK_URL, RPM_URL, CRENEAUX_URL, CT_URL } from "./constants";
 import { log } from "./logging";
 import { ISeance, ISport } from "./types";
-import { formatDayDate, sleep } from "./utils";
-
-export const sports = [
-  {
-    url: RPM_URL,
-    name: "RPM",
-    lastValue: Number.MAX_SAFE_INTEGER,
-    tarif: "1195387",
-    next_period: { begin_end: "", period_id: "", url: "", seances: [] },
-    id: 24,
-    niveau: 0,
-    ready: false,
-  },
-] as ISport[];
 
 export async function loginLaVague(browser: Browser) {
   let page: Page;
@@ -46,6 +31,7 @@ export async function loginLaVague(browser: Browser) {
   const email = await page.waitForSelector('input[name="email"]', {
     timeout: 0,
   });
+
   await email?.type(process.env.EMAIL!);
   const password = await page.waitForSelector('input[name="password"]', {
     timeout: 0,
@@ -60,19 +46,17 @@ export async function loginLaVague(browser: Browser) {
   await page.waitForNetworkIdle({ timeout: 0 });
   log(["About to go to book_url"]);
 
-  const resp = await page.goto(BOOK_URL, {
+  await page.goto(BOOK_URL, {
     timeout: 0,
   });
-
   const oui = await page
     .waitForSelector("text/OUI", { timeout: 10000 })
     .catch(() => null);
-
   if (oui) await oui.click();
-  await page.evaluate(() => {
-    const inputs = document.getElementsByTagName("input");
-    inputs[1].click();
+  const continuer = await page.waitForSelector('input[value="CONTINUER"]', {
+    timeout: 0,
   });
+  await continuer?.click();
 
   log(["Going to return page, I am connected"]);
 
@@ -84,6 +68,7 @@ async function prepareNextPeriod(
   sport: ISport,
   slotsSelector: ElementHandle<Element>
 ) {
+  log("prepareNextPeriod");
   const slots = await slotsSelector?.evaluate((el) => {
     return Array.from(el.children).map((child) => {
       const period = (child as HTMLInputElement).value;
@@ -105,23 +90,41 @@ async function prepareNextPeriod(
   const seances = await page.$$eval("table", (el) => {
     const table = el[1] as HTMLTableElement;
     const rows = Array.from(table.rows);
-    const parsed = rows.map((row) => {
+    const result: ISeance[] = [];
+    rows.forEach((row) => {
       const cell = Array.from(row.children);
+
       const date = (cell[0] as any).innerText;
+      const capacity = (cell[1] as any).innerText
+        .replace(/(\r\n|\n|\r|\t)/gm, " ")
+        .split(" ")
+        .filter((el: string) => el.includes("/"));
+      capacity.forEach((el: string) => {
+        console.log(el);
+      });
+      console.log((cell[1] as any).innerText);
       const hours = (cell[1] as any).innerText
         .replace(/(\r\n|\n|\r|\t)/gm, " ")
         .split(" ")
         .filter((el: string) => el.includes(">"));
-      return { date: date, plage: hours } satisfies ISeance;
+      for (let i = 0; i < hours.length; i++) {
+        // if (capacity[i].split("/")[0] != capacity[i].split("/")[1])
+        result.push({
+          date: date,
+          plage: hours[i],
+          available: capacity[i].split("/")[0] != capacity[i].split("/")[1],
+        });
+      }
     });
-    return parsed;
+
+    return result;
   });
+
   sport.next_period.seances = seances;
 }
 
-export async function checkSport(page: Page, sport: ISport) {
+export async function goToSportMainPage(page: Page, sport: ISport) {
   try {
-    log(["Let's check " + sport.name]);
     await page.goto(sport.url, {
       timeout: 0,
     });
@@ -140,6 +143,15 @@ export async function checkSport(page: Page, sport: ISport) {
         timeout: 0,
       });
     }
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+
+export async function checkSport(page: Page, sport: ISport) {
+  try {
+    log(["Let's check " + sport.name]);
+    goToSportMainPage(page, sport);
 
     const slots = await page.waitForSelector("#liste_periodes", {
       timeout: 0,

@@ -37,5 +37,5 @@ export function getPath() {
 export function formatDayDate(s: string) {
   const day = s.split("\n")[0];
   const date = s.split("\n")[1];
-  return `${day} ${date}`;
+  return `${day} ${date.slice(0, date.length - 5)}`;
 }
