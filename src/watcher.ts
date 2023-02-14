@@ -68,7 +68,7 @@ async function prepareNextPeriod(
   sport: ISport,
   slotsSelector: ElementHandle<Element>
 ) {
-  log("prepareNextPeriod");
+  log(["prepareNextPeriod"]);
   const slots = await slotsSelector?.evaluate((el) => {
     return Array.from(el.children).map((child) => {
       const period = (child as HTMLInputElement).value;
@@ -108,7 +108,6 @@ async function prepareNextPeriod(
         .split(" ")
         .filter((el: string) => el.includes(">"));
       for (let i = 0; i < hours.length; i++) {
-        // if (capacity[i].split("/")[0] != capacity[i].split("/")[1])
         result.push({
           date: date,
           plage: hours[i],
@@ -129,6 +128,8 @@ export async function goToSportMainPage(page: Page, sport: ISport) {
       timeout: 0,
     });
 
+    await page.waitForNetworkIdle({ timeout: 0 });
+
     if (
       page.url() ===
       "https://moncentreaquatique.com/module-inscriptions/residence/"
@@ -137,25 +138,36 @@ export async function goToSportMainPage(page: Page, sport: ISport) {
         .waitForSelector("text/OUI", { timeout: 10000 })
         .catch(() => null);
       if (oui) await oui.click();
+      await page.waitForNetworkIdle({ timeout: 0 });
+
       const button = await page.waitForSelector('input[value="CONTINUER"]');
       await button?.click();
+      await page.waitForNetworkIdle({ timeout: 0 });
       await page.goto(sport.url, {
         timeout: 0,
       });
     }
   } catch (e) {
-    console.log("error", e);
+    console.log("error here", e);
+    log("let's throw the error");
+    throw e;
   }
 }
 
 export async function checkSport(page: Page, sport: ISport) {
   try {
     log(["Let's check " + sport.name]);
-    goToSportMainPage(page, sport);
 
+    await goToSportMainPage(page, sport).catch((e) => {
+      log(["Error in goToSportMainPage"]);
+      throw e;
+    });
+    log(["after goToSportMainPage"]);
+    log(["I am in " + sport.name + " page"]);
     const slots = await page.waitForSelector("#liste_periodes", {
       timeout: 0,
     });
+    log(["I have slots " + sport.name + " page"]);
     if (!slots) return false;
 
     let length = await slots?.evaluate((el) => {
@@ -167,19 +179,19 @@ export async function checkSport(page: Page, sport: ISport) {
       "There are " + length + " slots " + " last value is " + sport.lastValue,
     ]);
 
-    // if (length > sport.lastValue) {
-    sport.lastValue = length;
-
     await prepareNextPeriod(page, sport, slots);
 
-    sport.ready = true;
-    return true;
-    // } else log(["Nothing to do here"]);
+    if (length > sport.lastValue) {
+      sport.lastValue = length;
+
+      sport.ready = true;
+      return true;
+    } else log(["Nothing to do here"]);
     sport.lastValue = length;
     sport.ready = false;
-    return false;
+    return true;
   } catch (err) {
-    console.log(err);
-    return false;
+    log(["Error in checkSport: ", sport.name]);
+    throw err;
   }
 }

@@ -28,22 +28,31 @@ export async function activateBot() {
   const bot = new Telegraf(process.env.CONV_TOKEN!);
 
   bot.command("/ok", async (ctx) => {
+    ctx.deleteMessage();
+
     ctx.reply("ok");
   });
 
-  bot.command("/test", async () => {
+  bot.command("/test", async (ctx) => {
+    ctx.deleteMessage();
+
     sendMessage("test");
   });
 
-  bot.command("/status", async () => {
+  bot.command("/status", async (ctx) => {
+    ctx.deleteMessage();
     if (process.env.program_status)
       sendMessageManagement(process.env.program_status);
     else sendMessageManagement("no status");
   });
 
-  bot.command("/conv_id", (ctx) => ctx.reply(ctx.chat.id.toString()));
+  bot.command("/conv_id", (ctx) => {
+    ctx.deleteMessage();
+    ctx.reply(ctx.chat.id.toString());
+  });
 
   bot.command("/réserver", (ctx) => {
+    ctx.deleteMessage();
     return ctx.reply(
       `Sélectionnez un sport svp`,
       Markup.keyboard(sports.map((s) => "/" + s.name))
@@ -109,6 +118,7 @@ function setUpSeancesInteractions(
       s.date
     )} à ${s.plage} validée: --> /sports pour changer de sport`;
     bot.command(`/${s.hash}`, async (ctx) => {
+      ctx.deleteMessage();
       ctx.reply("Inscription en cours... patientez svp");
       let browser = await startBrowser().catch((e) => {
         log(["error starting Browser: ", e]);
@@ -147,8 +157,9 @@ export function setUpInteractions(
     }) as string[];
 
     setUpSeancesInteractions(bot, sport.next_period.seances!, sport);
-    console.log("configuring :", sport.name);
+    log(["configuring :", sport.name]);
     bot.command("/" + sport.name.split(" ")[0], (ctx) => {
+      ctx.deleteMessage();
       const filtered = inputs
         .filter((v) => v.includes("➡️"))
         .concat(["/sports"]);

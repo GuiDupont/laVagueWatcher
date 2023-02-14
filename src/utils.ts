@@ -12,6 +12,11 @@ export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export async function sleepSeconds(seconds: number) {
+  log([`Time to sleep ${seconds} seconds`]);
+  return sleep(1000 * seconds);
+}
+
 export async function sleepMinutes(minutes: number) {
   log([`Time to sleep ${minutes} minutes`]);
   return sleep(1000 * 60 * minutes);

@@ -9,7 +9,7 @@ import {
   CT_URL,
 } from "./constants";
 import startBrowser from "./startBrowser";
-import { sleep, sleepHours, sleepMinutes } from "./utils";
+import { sleep, sleepHours, sleepMinutes, sleepSeconds } from "./utils";
 import { now } from "moment";
 import { log } from "./logging";
 import moment from "moment";
@@ -52,30 +52,43 @@ async function main() {
         process.env.program_status = "CHECKING";
         let ready = true;
         for (let i = 0; i < sports.length; i++) {
-          // if (sports[i].ready) continue;
-          if (await checkSport(page, sports[i])) {
-            await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
-            // await sleepHours(4 * 24);
-          }
+          if (sports[i].ready) continue;
+          await checkSport(page, sports[i]);
+
+          log([sports[i].name, sports[i].lastValue]);
           if (!sports[i].ready) ready = false;
         }
 
+        setUpInteractions(bot, sports);
+
         if (ready) {
-          setUpInteractions(bot, sports);
+          await sendMessage("[LA VAGUE] Maman tu peux réserver ton sport !");
+          if (!page.isClosed) await page.close();
+
+          await sleepHours(4 * 24);
         }
         log("Everything went well");
         if (!page.isClosed) await page.close();
-      } catch (err) {
-        console.log(now(), err);
+      } catch (err: any) {
+        log([(err as Error).message]);
+        await sleepSeconds(30);
+        continue;
       }
 
-      await sleep(10000);
       try {
         if (browser) await browser?.close();
       } catch (e) {
         log(["error while closing: ", e]);
       }
-      const time_to_sleep = sports[0].lastValue === 2 ? 3 : 120;
+
+      let time_to_sleep = 120;
+      let oneSportIsNotReady = false;
+      let oneSportIsReady = false;
+      sports.forEach((sport) => {
+        if (sport.ready) oneSportIsReady = true;
+        else oneSportIsNotReady = true;
+      });
+      if (oneSportIsReady && oneSportIsNotReady) time_to_sleep = 1;
       await sleepMinutes(time_to_sleep);
     }
   } catch (e) {}
