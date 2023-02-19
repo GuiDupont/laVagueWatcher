@@ -1,7 +1,6 @@
 import moment from "moment";
 import { Browser, PuppeteerNode } from "puppeteer";
-import { log } from "./logging";
-import { getPath } from "./utils";
+import { getPath, log } from "../utils";
 const puppeteer: PuppeteerNode = require("puppeteer");
 
 async function startBrowser(headless: boolean = true) {

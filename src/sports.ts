@@ -1,11 +1,4 @@
-import {
-  BODYCOMBAT_URL,
-  BODYPUMP_URL,
-  CAF_URL,
-  CT_URL,
-  RPM_URL,
-  ZUMBA_URL,
-} from "./constants";
+import { BODYPUMP_URL, CAF_URL, CT_URL, RPM_URL, ZUMBA_URL } from "./constants";
 import { ISport } from "./types";
 
 export const sports = [
@@ -18,6 +11,16 @@ export const sports = [
     id: 62,
     niveau: 126,
     ready: false,
+    creneaux: [
+      {
+        day: "Lundi",
+        begin_hour: "11h15",
+      },
+      {
+        day: "Vendredi",
+        begin_hour: "18h15",
+      },
+    ],
   },
   {
     url: RPM_URL,
@@ -28,6 +31,16 @@ export const sports = [
     id: 24,
     niveau: 0,
     ready: false,
+    creneaux: [
+      {
+        day: "Mardi",
+        begin_hour: "11h15",
+      },
+      {
+        day: "Jeudi",
+        begin_hour: "11h15",
+      },
+    ],
   },
   {
     url: ZUMBA_URL,
@@ -38,6 +51,16 @@ export const sports = [
     id: 25,
     niveau: 0,
     ready: false,
+    creneaux: [
+      {
+        day: "Mardi",
+        begin_hour: "19h15",
+      },
+      {
+        day: "Vendredi",
+        begin_hour: "19h15",
+      },
+    ],
   },
   {
     url: BODYPUMP_URL,
@@ -48,6 +71,12 @@ export const sports = [
     id: 32,
     niveau: 0,
     ready: false,
+    creneaux: [
+      {
+        day: "Mercredi",
+        begin_hour: "10h15",
+      },
+    ],
   },
   {
     url: CAF_URL,
@@ -58,5 +87,11 @@ export const sports = [
     id: 84,
     niveau: 106,
     ready: false,
+    creneaux: [
+      {
+        day: "Mardi",
+        begin_hour: "10h15",
+      },
+    ],
   },
 ] as ISport[];

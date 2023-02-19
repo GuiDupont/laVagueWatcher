@@ -1,15 +1,14 @@
 import { Context, Markup, Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { Update } from "telegraf/typings/core/types/typegram";
-import { ISeance, ISport } from "./types";
+import { ISeance, ISport } from "../types";
 import { ethers } from "ethers";
-import { formatDayDate, sleep } from "./utils";
-import startBrowser from "./startBrowser";
-import { log } from "./logging";
-import { goToSportMainPage, loginLaVague } from "./watcher";
-import { Page } from "puppeteer";
-import { CONFIRM_BOOK_URL } from "./constants";
-import { sports } from "./sports";
+import { formatDayDate, log } from "../utils";
+import startBrowser from "../browser/startBrowser";
+import { sports } from "../sports";
+import { bookASeance } from "../laVague/bookSeances";
+import { loginLaVague } from "../laVague/login";
+import { goToSportMainPage } from "../laVague/sportMainPage";
 
 dotenv.config();
 
@@ -19,7 +18,7 @@ export async function sendMessageManagement(message: string) {
 }
 
 export async function sendMessage(message: string) {
-  if (process.platform === "darwin") return;
+  // if (process.platform === "darwin") return;
   const bot = new Telegraf(process.env.CONV_TOKEN!);
   bot.telegram.sendMessage(process.env.CONV_ID!, message);
 }
@@ -75,37 +74,6 @@ export async function activateBot() {
 
   bot.launch();
   return bot;
-}
-
-async function bookASeance(page: Page, sport: ISport, i: number) {
-  await page.waitForNetworkIdle({ timeout: 0 });
-  await page.goto(sport.next_period.url!, {
-    timeout: 0,
-  });
-  await page.waitForNetworkIdle({ timeout: 0 });
-
-  const buttons = await page.$$("table tbody tr td table tbody tr td img");
-
-  await buttons[2 + i * 3].click();
-
-  const prenom = await page.waitForSelector('input[name="prenom"]', {
-    timeout: 0,
-  });
-  await prenom?.type(process.env.PRENOM!);
-  const nom = await page.waitForSelector('input[id="nom"]', {
-    timeout: 0,
-  });
-  await nom?.type(process.env.NOM!);
-  const validate = await page.waitForSelector(
-    'input[value="Je valide ma réservation"]',
-    {
-      timeout: 0,
-    }
-  );
-  await validate?.click();
-  await page.waitForNetworkIdle({ timeout: 0 });
-  await page.goto(CONFIRM_BOOK_URL, { timeout: 0 });
-  await page.waitForNetworkIdle({ timeout: 0 });
 }
 
 function setUpSeancesInteractions(
