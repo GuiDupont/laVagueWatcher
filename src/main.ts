@@ -19,7 +19,7 @@ process.env.program_status = "SETTING UP";
 async function main() {
   try {
     moment.locale("fr");
-    const bot = await activateBot();
+    await activateBot();
     if (process.platform !== "darwin")
       await sendMessageManagement("[Let's get back to work]");
 

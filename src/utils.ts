@@ -1,4 +1,5 @@
 import moment from "moment";
+import { sendMessageManagement } from "./telegram/telegramBot";
 
 export async function sleep(ms: number) {
   process.env.program_status = "SLEEPING";
@@ -34,5 +35,9 @@ export function formatDayDate(s: string) {
 }
 
 export function log(messages: any[] | string) {
+  if (typeof messages === "string") messages = [messages];
+  messages.forEach((m) => {
+    sendMessageManagement(m);
+  });
   console.log("[" + moment().format() + "] ", ...messages);
 }
