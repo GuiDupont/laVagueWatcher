@@ -1,11 +1,11 @@
 import { Context, Markup, Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { Update } from "telegraf/typings/core/types/typegram";
-import { ISeance, ISport } from "../types";
+import { ISeance, ISport } from "../types/types";
 import { ethers } from "ethers";
 import { formatDayDate, log } from "../utils";
 import startBrowser from "../browser/startBrowser";
-import { sports } from "../sports";
+import { sports } from "../data/sports";
 import { bookASeance } from "../laVague/bookSeances";
 import { loginLaVague } from "../laVague/login";
 import { goToSportMainPage } from "../laVague/sportMainPage";
@@ -36,6 +36,16 @@ export async function activateBot() {
     ctx.deleteMessage();
 
     sendMessage("test");
+  });
+
+  bot.command("/sleepADay", async (ctx) => {
+    process.env.SLEEP = 24 * 60 * 60 * 1000 + ""; // day in ms
+  });
+
+  bot.command("/sleepHours-X", async (ctx) => {
+    const tiret = ctx.message.text.indexOf("-");
+    const hours = parseInt(ctx.message.text.slice(tiret + 1));
+    process.env.SLEEP = hours * 60 * 60 * 1000 + ""; // day in ms
   });
 
   bot.command("/status", async (ctx) => {

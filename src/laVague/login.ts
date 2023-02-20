@@ -1,5 +1,5 @@
 import { Browser, Page } from "puppeteer";
-import { BASE_URL, BOOK_URL } from "../constants";
+import { BASE_URL, BOOK_URL } from "../data/constants";
 import { log } from "../utils";
 
 export async function loginLaVague(browser: Browser) {

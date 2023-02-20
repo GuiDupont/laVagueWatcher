@@ -1,6 +1,6 @@
 import { Page } from "puppeteer";
-import { CRENEAUX_URL } from "../constants";
-import { ISeance, ISport } from "../types";
+import { CRENEAUX_URL } from "../data/constants";
+import { ISeance, ISport } from "../types/types";
 import { log } from "../utils";
 import { goToSportMainPage } from "./sportMainPage";
 

@@ -1,7 +1,7 @@
 import { Page } from "puppeteer";
-import { CONFIRM_BOOK_URL } from "../constants";
+import { CONFIRM_BOOK_URL } from "../data/constants";
 import { sendMessage, sendMessageManagement } from "../telegram/telegramBot";
-import { ISport } from "../types";
+import { ISport } from "../types/types";
 import { log } from "../utils";
 
 export async function bookASeance(page: Page, sport: ISport, i: number) {

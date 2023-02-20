@@ -1,5 +1,5 @@
 import { BODYPUMP_URL, CAF_URL, CT_URL, RPM_URL, ZUMBA_URL } from "./constants";
-import { ISport } from "./types";
+import { ISport } from "../types/types";
 
 export const sports = [
   {

@@ -1,6 +1,11 @@
-import { ISport } from "../types";
+import { ISport } from "../types/types";
 
 export function timeToSleep(sports: ISport[]) {
+  if (process.env.SLEEP != "0") {
+    const sleep = parseInt(process.env.SLEEP!);
+    process.env.SLEEP = "0";
+    return sleep;
+  }
   let oneSportIsNotReady = false;
   let oneSportIsReady = false;
   let fastMode = false;

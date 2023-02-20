@@ -3,23 +3,21 @@ import { sendMessageManagement } from "./telegram/telegramBot";
 
 export async function sleep(ms: number) {
   process.env.program_status = "SLEEPING";
-
+  sendMessageManagement(`Sleeping for ${ms} ms`);
+  log([`Sleeping for ${ms} ms`]);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function sleepSeconds(seconds: number) {
-  log([`Time to sleep ${seconds} seconds`]);
   return sleep(1000 * seconds);
 }
 
 export async function sleepMinutes(minutes: number) {
-  log([`Time to sleep ${minutes} minutes`]);
-  return sleep(1000 * 60 * minutes);
+  return sleepSeconds(60 * minutes);
 }
 
 export async function sleepHours(hours: number) {
-  log([`Time to sleep ${hours} hours`]);
-  return sleep(1000 * 60 * 60 * hours);
+  return sleepMinutes(60 * hours);
 }
 
 export function getPath() {
@@ -36,8 +34,6 @@ export function formatDayDate(s: string) {
 
 export function log(messages: any[] | string) {
   if (typeof messages === "string") messages = [messages];
-  messages.forEach((m) => {
-    sendMessageManagement(m);
-  });
+
   console.log("[" + moment().format() + "] ", ...messages);
 }

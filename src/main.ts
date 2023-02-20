@@ -5,7 +5,7 @@ import moment from "moment";
 import { activateBot, sendMessageManagement } from "./telegram/telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { checkSport, prepareNextPeriod } from "./laVague/watcher";
-import { sports } from "./sports";
+import { sports } from "./data/sports";
 import { loginLaVague } from "./laVague/login";
 import { bookSeances } from "./laVague/bookSeances";
 import { timeToSleep } from "./laVague/timeToSleep";
