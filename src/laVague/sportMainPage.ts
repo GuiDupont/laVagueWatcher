@@ -33,6 +33,8 @@ export async function goToSportMainPage(page: Page, sport: ISport) {
       await button?.click();
       log("let's wait for network idle done");
       await page.waitForNetworkIdle({ timeout: 0 });
+      log("let's go to sport main page");
+
       await page.goto(sport.url, {
         timeout: 0,
       });
