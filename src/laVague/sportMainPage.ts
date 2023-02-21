@@ -1,11 +1,13 @@
 import { Page } from "puppeteer";
 import { ISport } from "../types/types";
-import { log } from "../utils";
+import { log, sleepSeconds } from "../utils";
 
 export async function goToSportMainPage(page: Page, sport: ISport) {
   try {
     log("go to sport main page");
+    console.log(page.url());
     await page.waitForNetworkIdle({ timeout: 0 });
+    await sleepSeconds(3);
     await page.goto(sport.url, {
       timeout: 0,
     });
