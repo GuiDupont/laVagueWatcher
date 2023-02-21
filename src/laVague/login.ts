@@ -64,8 +64,8 @@ export async function loginLaVague(browser: Browser) {
   console.log("continuer", continuer);
   console.log(await continuer?.click());
   console.log(page.url());
-  await page.waitForNetworkIdle({ timeout: 0 });
-
+  // await page.waitForNetworkIdle({ timeout: 0 });
+  await page.waitForNavigation({ timeout: 0 });
   log(["Going to return page, I am connected"]);
   console.log(page.url());
 
