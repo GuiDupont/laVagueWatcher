@@ -48,7 +48,7 @@ export async function loginLaVague(browser: Browser) {
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
-  await page.waitForNavigation({ timeout: 0 });
+  // await page.waitForNavigation({ timeout: 0 });
 
   await page.waitForNetworkIdle({ timeout: 0 });
   const oui = await page
