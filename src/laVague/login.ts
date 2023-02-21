@@ -1,6 +1,6 @@
 import { Browser, Page } from "puppeteer";
 import { BASE_URL, BOOK_URL } from "../data/constants";
-import { log } from "../utils";
+import { log, sleepSeconds } from "../utils";
 
 export async function loginLaVague(browser: Browser) {
   let page: Page;
@@ -51,15 +51,16 @@ export async function loginLaVague(browser: Browser) {
   // await page.waitForNavigation({ timeout: 0 });
 
   await page.waitForNetworkIdle({ timeout: 0 });
+  sleepSeconds(3);
   const oui = await page
-    .waitForSelector("text/OUI", { timeout: 10000 })
+    .waitForSelector("text/OUI", { timeout: 2000 })
     .catch(() => null);
   if (oui) {
     log(["In oui"]);
 
     await oui.click();
     await page.waitForNetworkIdle({ timeout: 0 });
-  }
+  } else await sleepSeconds(3);
   log(["About to continuer"]);
 
   const continuer = await page.waitForSelector('input[value="CONTINUER"]', {
