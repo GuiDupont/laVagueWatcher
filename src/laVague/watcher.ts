@@ -69,7 +69,6 @@ export async function checkSport(page: Page, sport: ISport) {
     console.log(
       await goToSportMainPage(page, sport).catch((e) => {
         log(["Error in goToSportMainPage"]);
-        // throw e;
         return;
       })
     );
