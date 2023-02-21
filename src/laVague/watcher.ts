@@ -27,6 +27,8 @@ export async function prepareNextPeriod(page: Page, sport: ISport) {
     timeout: 0,
   });
 
+  await page.waitForNetworkIdle({ timeout: 0 });
+
   const seances = await page.$$eval("table", (el: any) => {
     const table = el[1] as HTMLTableElement;
     const rows = Array.from(table.rows);
@@ -64,10 +66,13 @@ export async function checkSport(page: Page, sport: ISport) {
   try {
     log(["Let's check " + sport.name]);
 
-    await goToSportMainPage(page, sport).catch((e) => {
-      log(["Error in goToSportMainPage"]);
-      throw e;
-    });
+    console.log(
+      await goToSportMainPage(page, sport).catch((e) => {
+        log(["Error in goToSportMainPage"]);
+        // throw e;
+        return;
+      })
+    );
     log(["after goToSportMainPage"]);
     log(["I am in " + sport.name + " page"]);
     const slots = await page.waitForSelector("#liste_periodes", {

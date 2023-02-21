@@ -25,7 +25,6 @@ export async function loginLaVague(browser: Browser) {
     timeout: 0,
   });
 
-  log(["I am in ", BASE_URL]);
   log(["About to connect"]);
   const email = await page.waitForSelector('input[name="email"]', {
     timeout: 0,
@@ -62,7 +61,8 @@ export async function loginLaVague(browser: Browser) {
   const continuer = await page.waitForSelector('input[value="CONTINUER"]', {
     timeout: 0,
   });
-  await continuer?.click();
+  console.log("continuer", continuer);
+  console.log(await continuer?.click());
   await page.waitForNetworkIdle({ timeout: 0 });
 
   log(["Going to return page, I am connected"]);

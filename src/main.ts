@@ -40,14 +40,15 @@ async function main() {
         let ready = true;
         for (let i = 0; i < sports.length; i++) {
           if (sports[i].ready) continue;
-          await checkSport(page, sports[i]);
+          console.log(
+            "check sport promise:",
+            await checkSport(page, sports[i])
+          );
           if (sports[i].ready) {
             await prepareNextPeriod(page, sports[i]);
             await bookSeances(page, sports[i]);
           } else ready = false;
         }
-
-        // setUpInteractions(bot, sports);
 
         if (ready) {
           if (!page.isClosed) await page.close();
@@ -57,7 +58,14 @@ async function main() {
         }
         log("Everything went well");
         if (!page.isClosed) await page.close();
+        if (!page.isClosed) console.log(page.url());
+        else console.log("page is closed");
       } catch (err: any) {
+        try {
+          if (browser) await browser?.close();
+        } catch (e) {
+          log(["error while closing: ", e]);
+        }
         log([(err as Error).message]);
         await sleepSeconds(60);
         continue;
