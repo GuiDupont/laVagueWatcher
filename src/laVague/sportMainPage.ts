@@ -5,6 +5,7 @@ import { log } from "../utils";
 export async function goToSportMainPage(page: Page, sport: ISport) {
   try {
     log("go to sport main page");
+    await page.waitForNetworkIdle({ timeout: 0 });
     await page.goto(sport.url, {
       timeout: 0,
     });
