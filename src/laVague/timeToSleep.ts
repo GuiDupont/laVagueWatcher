@@ -16,5 +16,5 @@ export function timeToSleep(sports: ISport[]) {
   });
   if (!fastMode) return 100; // slow mode
   else if (oneSportIsReady && oneSportIsNotReady) return 1; // urgence !!
-  else return 0; // fast mode
+  else return 2; // fast mode
 }
