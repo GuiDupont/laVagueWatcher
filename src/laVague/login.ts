@@ -51,7 +51,6 @@ export async function loginLaVague(browser: Browser) {
   // await page.waitForNavigation({ timeout: 0 });
 
   await page.waitForNetworkIdle({ timeout: 0 });
-  sleepSeconds(3);
   const oui = await page
     .waitForSelector("text/OUI", { timeout: 2000 })
     .catch(() => null);
