@@ -7,7 +7,7 @@ export async function goToSportMainPage(page: Page, sport: ISport) {
     log("go to sport main page");
     console.log(page.url());
     await page.waitForNetworkIdle({ timeout: 0 });
-    await sleepSeconds(3);
+    await sleepSeconds(1);
     await page.goto(sport.url, {
       timeout: 0,
     });
