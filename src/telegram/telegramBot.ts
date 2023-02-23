@@ -40,15 +40,17 @@ export async function activateBot() {
   });
 
   bot.command("/sleepADay", async (ctx) => {
-    process.env.SLEEP = 24 * 60 * 60 * 1000 + ""; // day in ms
+    process.env.SLEEP_MINUTES = 24 * 60 + ""; // day in ms
+    ctx.reply(`after next call I will sleep ${process.env.SLEEP_MINUTES} minutes `);
+
   });
 
   bot.command("/sleepHours-X", async (ctx) => {
     
     const tiret = ctx.message.text.indexOf("-");
     const hours = parseInt(ctx.message.text.slice(tiret + 1));
-    process.env.SLEEP = hours * 60 * 60 * 1000 + ""; // hours in ms
-    ctx.reply(`after next call I will sleep ${hours}`);
+    process.env.SLEEP_MINUTES = hours * 60  + ""; // hours in ms
+    ctx.reply(`after next call I will sleep ${process.env.SLEEP_MINUTES} minutes`);
   });
 
   bot.command("/status", async (ctx) => {
