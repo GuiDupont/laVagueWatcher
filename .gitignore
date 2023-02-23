@@ -4,3 +4,4 @@ apps/scrapper/node_modules
 node_modules
 tmp
 .wwebjs_auth
+.env

@@ -36254,3 +36254,85 @@ check sport promise: true
 [2023-02-23T13:41:10+01:00]  Sleeping for 345600000 ms
 error Command failed with signal "SIGKILL".
 info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+yarn run v1.22.19
+warning ../../package.json: No license field
+$ ts-node src/main.ts
+[2023-02-23T15:04:35+01:00]  opening browser...
+[2023-02-23T15:04:41+01:00]  browser opened !
+[2023-02-23T15:04:46+01:00]  About to connect
+[2023-02-23T15:04:47+01:00]  submit is  ElementHandle {}
+[2023-02-23T15:04:50+01:00]  About to go to book_url
+[2023-02-23T15:04:52+01:00]  In oui
+[2023-02-23T15:04:53+01:00]  About to continuer
+continuer ElementHandle {}
+https://moncentreaquatique.com/module-inscriptions/residence/
+[2023-02-23T15:04:58+01:00]  Going to return page, I am connected
+https://moncentreaquatique.com/module-inscriptions/activites/
+[2023-02-23T15:04:58+01:00]  Let's check Circuit Training
+[2023-02-23T15:04:58+01:00]  go to sport main page
+https://moncentreaquatique.com/module-inscriptions/activites/
+[2023-02-23T15:05:00+01:00]  after go to
+
+[2023-02-23T15:05:00+01:00]  wait for network idle done
+undefined
+[2023-02-23T15:05:00+01:00]  after goToSportMainPage
+[2023-02-23T15:05:00+01:00]  I am in Circuit Training page
+[2023-02-23T15:05:00+01:00]  I have slots Circuit Training page
+[2023-02-23T15:05:00+01:00]  There are 2 slots  last value is 9007199254740991
+[2023-02-23T15:05:00+01:00]  Nothing to do here
+check sport promise: true
+[2023-02-23T15:05:00+01:00]  Let's check RPM
+[2023-02-23T15:05:00+01:00]  go to sport main page
+https://moncentreaquatique.com/module-inscriptions/activite/?scroll=content&activite=62&niveau=126
+[2023-02-23T15:05:02+01:00]  after go to
+
+[2023-02-23T15:05:03+01:00]  wait for network idle done
+undefined
+[2023-02-23T15:05:03+01:00]  after goToSportMainPage
+[2023-02-23T15:05:03+01:00]  I am in RPM page
+[2023-02-23T15:05:03+01:00]  I have slots RPM page
+[2023-02-23T15:05:03+01:00]  There are 2 slots  last value is 9007199254740991
+[2023-02-23T15:05:03+01:00]  Nothing to do here
+check sport promise: true
+[2023-02-23T15:05:03+01:00]  Let's check Zumba
+[2023-02-23T15:05:03+01:00]  go to sport main page
+https://moncentreaquatique.com/module-inscriptions/activite/?activite=24
+[2023-02-23T15:05:04+01:00]  after go to
+
+[2023-02-23T15:05:05+01:00]  wait for network idle done
+undefined
+[2023-02-23T15:05:05+01:00]  after goToSportMainPage
+[2023-02-23T15:05:05+01:00]  I am in Zumba page
+[2023-02-23T15:05:05+01:00]  I have slots Zumba page
+[2023-02-23T15:05:05+01:00]  There are 2 slots  last value is 9007199254740991
+[2023-02-23T15:05:05+01:00]  Nothing to do here
+check sport promise: true
+[2023-02-23T15:05:05+01:00]  Let's check Body Pump
+[2023-02-23T15:05:05+01:00]  go to sport main page
+https://moncentreaquatique.com/module-inscriptions/activite/?activite=25
+[2023-02-23T15:05:06+01:00]  after go to
+
+[2023-02-23T15:05:07+01:00]  wait for network idle done
+undefined
+[2023-02-23T15:05:07+01:00]  after goToSportMainPage
+[2023-02-23T15:05:07+01:00]  I am in Body Pump page
+[2023-02-23T15:05:07+01:00]  I have slots Body Pump page
+[2023-02-23T15:05:07+01:00]  There are 3 slots  last value is 9007199254740991
+[2023-02-23T15:05:07+01:00]  Nothing to do here
+check sport promise: true
+[2023-02-23T15:05:07+01:00]  Let's check CAF
+[2023-02-23T15:05:07+01:00]  go to sport main page
+https://moncentreaquatique.com/module-inscriptions/activite/?activite=32
+[2023-02-23T15:05:08+01:00]  after go to
+
+[2023-02-23T15:05:10+01:00]  wait for network idle done
+undefined
+[2023-02-23T15:05:10+01:00]  after goToSportMainPage
+[2023-02-23T15:05:10+01:00]  I am in CAF page
+[2023-02-23T15:05:10+01:00]  I have slots CAF page
+[2023-02-23T15:05:10+01:00]  There are 2 slots  last value is 9007199254740991
+[2023-02-23T15:05:10+01:00]  Nothing to do here
+check sport promise: true
+[2023-02-23T15:05:10+01:00]  Everything went well
+page is closed
+[2023-02-23T15:05:10+01:00]  Sleeping for 180000 ms
