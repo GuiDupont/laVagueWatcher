@@ -3,12 +3,13 @@ import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-
 import { Update } from "telegraf/typings/core/types/typegram";
 import { ISeance, ISport } from "../types/types";
 import { ethers } from "ethers";
-import { formatDayDate, log } from "../utils";
+import { formatDayDate, log, sleepMinutes, sleepSeconds } from "../utils";
 import startBrowser from "../browser/startBrowser";
 import { sports } from "../data/sports";
 import { bookASeance } from "../laVague/bookSeances";
 import { loginLaVague } from "../laVague/login";
 import { goToSportMainPage } from "../laVague/sportMainPage";
+import { env, exit } from "process";
 
 dotenv.config();
 
@@ -43,9 +44,11 @@ export async function activateBot() {
   });
 
   bot.command("/sleepHours-X", async (ctx) => {
+    
     const tiret = ctx.message.text.indexOf("-");
     const hours = parseInt(ctx.message.text.slice(tiret + 1));
-    process.env.SLEEP = hours * 60 * 60 * 1000 + ""; // day in ms
+    process.env.SLEEP = hours * 60 * 60 * 1000 + ""; // hours in ms
+    ctx.reply(`after next call I will sleep ${hours}`);
   });
 
   bot.command("/status", async (ctx) => {

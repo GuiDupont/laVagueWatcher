@@ -6,10 +6,10 @@ import { log } from "../utils";
 
 export async function bookASeance(page: Page, sport: ISport, i: number) {
   await page.waitForNetworkIdle({ timeout: 0 });
-  // await page.goto(sport.next_period.url!, {
-  //   timeout: 0,
-  // });
-  // await page.waitForNetworkIdle({ timeout: 0 });
+  await page.goto(sport.next_period.url!, {
+    timeout: 0,
+  });
+  await page.waitForNetworkIdle({ timeout: 0 });
 
   const buttons = await page.$$("table tbody tr td table tbody tr td img");
 

@@ -1,7 +1,7 @@
 import { ISport } from "../types/types";
 
 export function timeToSleep(sports: ISport[]) {
-  if (process.env.SLEEP != "0") {
+  if (process.env.SLEEP !== "0" && process.env.SLEEP !== undefined) {
     const sleep = parseInt(process.env.SLEEP!);
     process.env.SLEEP = "0";
     return sleep;

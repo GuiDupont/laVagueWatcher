@@ -12,7 +12,7 @@ export async function goToSportMainPage(page: Page, sport: ISport) {
       timeout: 0,
     });
     log("after go to");
-
+    console.log("");
     await page.waitForNetworkIdle({ timeout: 0 });
     log("wait for network idle done");
     if (
