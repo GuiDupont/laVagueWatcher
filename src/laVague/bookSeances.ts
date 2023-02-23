@@ -6,6 +6,7 @@ import { log } from "../utils";
 
 export async function bookASeance(page: Page, sport: ISport, i: number) {
   await page.waitForNetworkIdle({ timeout: 0 });
+  // if (page.url !== )
   await page.goto(sport.next_period.url!, {
     timeout: 0,
   });
