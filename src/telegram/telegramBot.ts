@@ -33,6 +33,17 @@ export async function activateBot() {
     ctx.reply("ok");
   });
 
+  bot.command("/rapport", async (ctx) => {
+    const s = sports;
+    for (let i = 0;  i < sports.length; i++) {
+      if (s[i].ready)
+        await ctx.reply(`Le nouveau créneau de ${s[i].name} est disponible`);
+      else
+        await ctx.reply(`Le nouveau créneau de ${s[i].name} n'est pas disponible. ${s[i].lastValue}/3`)
+    }
+    await ctx.reply(`Je retourne travailler madame Dupont.`)
+  });
+
   bot.command("/test", async (ctx) => {
     ctx.deleteMessage();
 
