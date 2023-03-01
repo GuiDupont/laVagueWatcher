@@ -55,6 +55,9 @@ async function main() {
           if (browser) await browser?.close();
           await sleepHours(4 * 24);
           sports.forEach((s) => (s.ready = false));
+          sendMessageManagement(
+            "EveryThing is cleand up, let's get back to work"
+          );
         }
         log("Everything went well");
         if (!page.isClosed) await page.close();

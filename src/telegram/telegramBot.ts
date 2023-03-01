@@ -28,7 +28,7 @@ export async function activateBot() {
   const bot = new Telegraf(process.env.CONV_TOKEN!);
 
   bot.command("/ok", async (ctx) => {
-    ctx.deleteMessage();
+    // ctx.deleteMessage();
 
     ctx.reply("ok");
   });

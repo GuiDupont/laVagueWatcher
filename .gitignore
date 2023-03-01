@@ -5,3 +5,4 @@ node_modules
 tmp
 .wwebjs_auth
 .env
+nohup.out
