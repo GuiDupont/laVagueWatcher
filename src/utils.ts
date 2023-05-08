@@ -26,6 +26,10 @@ export function getPath() {
   return "/usr/bin/chromium-browser";
 }
 
+function onMac() {
+  return process.platform === "darwin";
+}
+
 export function formatDayDate(s: string) {
   const day = s.split("\n")[0];
   const date = s.split("\n")[1];
@@ -33,6 +37,7 @@ export function formatDayDate(s: string) {
 }
 
 export function log(messages: any[] | string) {
+  if (!onMac()) return;
   if (typeof messages === "string") messages = [messages];
 
   console.log("[" + moment().format() + "] ", ...messages);
