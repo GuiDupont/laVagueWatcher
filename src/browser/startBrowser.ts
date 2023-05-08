@@ -7,7 +7,7 @@ async function startBrowser(headless: boolean = true) {
   try {
     log(["opening browser..."]);
     const browser: Browser = await puppeteer.launch({
-      headless: false,
+      headless: headless,
       defaultViewport: null,
       // userDataDir: "./chrome_data",
       executablePath: getPath(),
