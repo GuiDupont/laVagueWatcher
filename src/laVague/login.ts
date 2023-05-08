@@ -40,24 +40,30 @@ export async function loginLaVague(browser: Browser) {
     timeout: 0,
   });
 
-  if (submit) await submit?.click();
-  log(["submit is ", submit]);
-  await page.waitForNetworkIdle({ timeout: 0 });
+  if (submit) {
+    await submit?.click();
+    log(["Here submit is ", submit]);
+
+    await page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
+  }
   log(["About to go to book_url"]);
 
   await page.goto(BOOK_URL, {
     timeout: 0,
   });
+  log(["aFter book url"]);
 
-  await page.waitForNetworkIdle({ timeout: 0 });
+  // await page.waitForNetworkIdle({ timeout: 0 });
+  log(["After network idle"]);
   const oui = await page
-    .waitForSelector("text/OUI", { timeout: 2000 })
+    .waitForSelector("text/OUI", { timeout: 2_000 })
     .catch(() => null);
+  log(["After oui"]);
   if (oui) {
     log(["In oui"]);
 
     await oui.click();
-    await page.waitForNetworkIdle({ timeout: 0 });
+    await page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
   } else await sleepSeconds(3);
   log(["About to continuer"]);
 
@@ -67,8 +73,8 @@ export async function loginLaVague(browser: Browser) {
   console.log("continuer", continuer);
   await continuer?.click();
   console.log(page.url());
-  await page.waitForNavigation({ timeout: 0 });
-  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.waitForNavigation({ timeout: 2_000 }).catch(() => null);
+  await page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
   log(["Going to return page, I am connected"]);
   console.log(page.url());
 

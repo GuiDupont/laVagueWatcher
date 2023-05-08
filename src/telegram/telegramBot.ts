@@ -35,13 +35,17 @@ export async function activateBot() {
 
   bot.command("/rapport", async (ctx) => {
     const s = sports;
-    for (let i = 0;  i < sports.length; i++) {
-      if (s[i].ready)
-        await ctx.reply(`Le nouveau créneau de ${s[i].name} est disponible`);
+    await ctx.reply(
+      `Rapport\nLe dernier check a eu lieu le ${process.env.last_check}`
+    );
+    for (let i = 0; i < sports.length; i++) {
+      if (s[i].ready) await ctx.reply(`Le ${s[i].name} est disponible`);
       else
-        await ctx.reply(`Le nouveau créneau de ${s[i].name} n'est pas disponible. ${s[i].lastValue}/3`)
+        await ctx.reply(
+          `Le ${s[i].name} n'est pas disponible. ${s[i].lastValue}/3`
+        );
     }
-    await ctx.reply(`Je retourne travailler madame Dupont.`)
+    await ctx.reply(`J'y retourne madame Dupont.`);
   });
 
   bot.command("/test", async (ctx) => {
@@ -52,16 +56,18 @@ export async function activateBot() {
 
   bot.command("/sleepADay", async (ctx) => {
     process.env.SLEEP_MINUTES = 24 * 60 + ""; // day in ms
-    ctx.reply(`after next call I will sleep ${process.env.SLEEP_MINUTES} minutes `);
-
+    ctx.reply(
+      `after next call I will sleep ${process.env.SLEEP_MINUTES} minutes `
+    );
   });
 
   bot.command("/sleepHours-X", async (ctx) => {
-    
     const tiret = ctx.message.text.indexOf("-");
     const hours = parseInt(ctx.message.text.slice(tiret + 1));
-    process.env.SLEEP_MINUTES = hours * 60  + ""; // hours in ms
-    ctx.reply(`after next call I will sleep ${process.env.SLEEP_MINUTES} minutes`);
+    process.env.SLEEP_MINUTES = hours * 60 + ""; // hours in ms
+    ctx.reply(
+      `after next call I will sleep ${process.env.SLEEP_MINUTES} minutes`
+    );
   });
 
   bot.command("/status", async (ctx) => {

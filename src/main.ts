@@ -79,7 +79,7 @@ async function main() {
       } catch (e) {
         log(["error while closing: ", e]);
       }
-
+      process.env.last_check = moment().format("LLLL");
       await sleepMinutes(timeToSleep(sports));
     }
   } catch (e) {}
