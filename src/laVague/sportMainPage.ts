@@ -1,6 +1,6 @@
 import { Page } from "puppeteer";
 import { ISport } from "../types/types";
-import { log, sleepSeconds } from "../utils";
+import { log } from "../utils";
 
 export async function goToSportMainPage(page: Page, sport: ISport) {
   try {

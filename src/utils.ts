@@ -21,7 +21,7 @@ export async function sleepHours(hours: number) {
 }
 
 export function getPath() {
-  if (process.platform === "darwin")
+  if (onMac())
     return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
   return "/usr/bin/chromium-browser";
 }

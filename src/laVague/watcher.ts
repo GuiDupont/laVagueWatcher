@@ -18,7 +18,7 @@ export async function prepareNextPeriod(page: Page, sport: ISport) {
       };
     });
   });
-  if (!slots) return [] as ISeance[];
+  if (!slots) return;
 
   sport.next_period = slots[slots.length - 1];
   sport.next_period.url = `${CRENEAUX_URL}&niveau=${sport.niveau}&periode=${sport.next_period.period_id}&tarif=${sport.tarif}`;
@@ -67,7 +67,7 @@ export async function checkSport(page: Page, sport: ISport) {
     log(["Let's check " + sport.name]);
 
     console.log(
-      await goToSportMainPage(page, sport).catch((e) => {
+      await goToSportMainPage(page, sport).catch(() => {
         log(["Error in goToSportMainPage"]);
         return;
       })

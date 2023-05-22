@@ -1,15 +1,8 @@
-import { Context, Markup, Telegraf } from "telegraf";
+import {  Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { Update } from "telegraf/typings/core/types/typegram";
-import { ISeance, ISport } from "../types/types";
-import { ethers } from "ethers";
-import { formatDayDate, log, sleepMinutes, sleepSeconds } from "../utils";
-import startBrowser from "../browser/startBrowser";
 import { sports } from "../data/sports";
-import { bookASeance } from "../laVague/bookSeances";
-import { loginLaVague } from "../laVague/login";
-import { goToSportMainPage } from "../laVague/sportMainPage";
-import { env, exit } from "process";
+import { log } from "../utils";
+
 
 dotenv.config();
 
@@ -105,6 +98,7 @@ export async function activateBot() {
   // });
 
   bot.launch();
+  log(["bot launched"]);
   return bot;
 }
 
