@@ -1,5 +1,7 @@
 import { ISport } from "../types/types";
 
+// time to sleep in minutes
+
 export function timeToSleep(sports: ISport[]) {
   if (
     process.env.SLEEP_MINUTES !== "0" &&
@@ -17,7 +19,7 @@ export function timeToSleep(sports: ISport[]) {
     else oneSportIsNotReady = true;
     if (sport.lastValue === 2) fastMode = true;
   });
-  if (!fastMode) return 0; // slow mode
+  if (!fastMode) return 60; // slow mode
   else if (oneSportIsReady && oneSportIsNotReady) return 1; // urgence !!
-  else return 0; // fast mode
+  else return 5; // fast mode
 }

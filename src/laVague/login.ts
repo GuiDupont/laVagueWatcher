@@ -44,17 +44,15 @@ export async function loginLaVague(browser: Browser) {
     await submit?.click();
     log(["Here submit is ", submit]);
 
-    await page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
+    await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => console.log("fail") );
   }
   log(["About to go to book_url"]);
 
   await page.goto(BOOK_URL, {
     timeout: 0,
-  });
+  }).catch(() => log(["in go to book url fail"]));
   log(["aFter book url"]);
 
-  // await page.waitForNetworkIdle({ timeout: 0 });
-  log(["After network idle"]);
   const oui = await page
     .waitForSelector("text/OUI", { timeout: 2_000 })
     .catch(() => null);
