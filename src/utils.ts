@@ -37,7 +37,7 @@ export function formatDayDate(s: string) {
 }
 
 export function log(messages: any[] | string) {
-  if (!onMac()) return;
+  // if (!onMac()) return;
   if (typeof messages === "string") messages = [messages];
 
   console.log("[" + moment().format() + "] ", ...messages);
