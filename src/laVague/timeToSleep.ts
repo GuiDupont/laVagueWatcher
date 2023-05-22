@@ -1,7 +1,10 @@
 import { ISport } from "../types/types";
 
 export function timeToSleep(sports: ISport[]) {
-  if (process.env.SLEEP_MINUTES !== "0" && process.env.SLEEP_MINUTES !== undefined) {
+  if (
+    process.env.SLEEP_MINUTES !== "0" &&
+    process.env.SLEEP_MINUTES !== undefined
+  ) {
     const sleep = parseInt(process.env.SLEEP_MINUTES!);
     process.env.SLEEP_MINUTES = "0";
     return sleep;
@@ -14,7 +17,7 @@ export function timeToSleep(sports: ISport[]) {
     else oneSportIsNotReady = true;
     if (sport.lastValue === 2) fastMode = true;
   });
-  if (!fastMode) return 100; // slow mode
+  if (!fastMode) return 0; // slow mode
   else if (oneSportIsReady && oneSportIsNotReady) return 1; // urgence !!
-  else return 3; // fast mode
+  else return 0; // fast mode
 }
