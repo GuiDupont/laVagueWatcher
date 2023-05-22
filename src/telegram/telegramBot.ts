@@ -1,32 +1,31 @@
-import {  Telegraf } from "telegraf";
+import { Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sports } from "../data/sports";
 import { log } from "../utils";
 
-
 dotenv.config();
 
 export async function sendMessageManagement(message: string) {
-  const bot = new Telegraf(process.env.CONV_TOKEN!);
+  const bot = new Telegraf(process.env.BOT_TOKEN!);
   bot.telegram.sendMessage(process.env.CONV_ID_MANAGEMENT!, message);
 }
 
 export async function sendMessage(message: string) {
   // if (process.platform === "darwin") return;
-  const bot = new Telegraf(process.env.CONV_TOKEN!);
+  const bot = new Telegraf(process.env.BOT_TOKEN!);
   bot.telegram.sendMessage(process.env.CONV_ID!, message);
 }
 
 export async function activateBot() {
-  const bot = new Telegraf(process.env.CONV_TOKEN!);
+  const bot = new Telegraf(process.env.BOT_TOKEN!);
 
-  bot.command("/ok", async (ctx) => {
-    // ctx.deleteMessage();
-
+  bot.hears("/ok", async (ctx) => {
     ctx.reply("ok");
   });
 
-  bot.command("/rapport", async (ctx) => {
+  bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+
+  bot.hears("/rapport", async (ctx) => {
     const s = sports;
     await ctx.reply(
       `Rapport\nLe dernier check a eu lieu le ${process.env.last_check}`
@@ -41,20 +40,20 @@ export async function activateBot() {
     await ctx.reply(`J'y retourne madame Dupont.`);
   });
 
-  bot.command("/test", async (ctx) => {
+  bot.hears("/test", async (ctx) => {
     ctx.deleteMessage();
 
     sendMessage("test");
   });
 
-  bot.command("/sleepADay", async (ctx) => {
+  bot.hears("/sleepADay", async (ctx) => {
     process.env.SLEEP_MINUTES = 24 * 60 + ""; // day in ms
     ctx.reply(
       `after next call I will sleep ${process.env.SLEEP_MINUTES} minutes `
     );
   });
 
-  bot.command("/sleepHours-X", async (ctx) => {
+  bot.hears("/sleepHours-X", async (ctx) => {
     const tiret = ctx.message.text.indexOf("-");
     const hours = parseInt(ctx.message.text.slice(tiret + 1));
     process.env.SLEEP_MINUTES = hours * 60 + ""; // hours in ms
@@ -63,14 +62,14 @@ export async function activateBot() {
     );
   });
 
-  bot.command("/status", async (ctx) => {
+  bot.hears("/status", async (ctx) => {
     ctx.deleteMessage();
     if (process.env.program_status)
       sendMessageManagement(process.env.program_status);
     else sendMessageManagement("no status");
   });
 
-  bot.command("/conv_id", (ctx) => {
+  bot.hears("/conv_id", (ctx) => {
     ctx.deleteMessage();
     ctx.reply(ctx.chat.id.toString());
   });
@@ -96,6 +95,10 @@ export async function activateBot() {
   //     ])
   //   );
   // });
+
+  bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+  process.once("SIGINT", () => bot.stop("SIGINT"));
+  process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
   bot.launch();
   log(["bot launched"]);
