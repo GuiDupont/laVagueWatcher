@@ -3,6 +3,7 @@ import { CRENEAUX_URL } from "../data/constants";
 import { ISeance, ISport } from "../types/types";
 import { log } from "../utils";
 import { goToSportMainPage } from "./sportMainPage";
+import { sendMessageManagement } from "../telegram/telegramBot";
 
 export async function prepareNextPeriod(page: Page, sport: ISport) {
   const slotsSelector = await page.waitForSelector("#liste_periodes", {
@@ -90,7 +91,10 @@ export async function checkSport(page: Page, sport: ISport) {
     ]);
 
     sport.ready = false;
-    if (length > sport.lastValue) sport.ready = true;
+    if (length > sport.lastValue) {
+      sendMessageManagement("One sport available");
+      sport.ready = true;
+    }
     else log(["Nothing to do here"]);
     sport.lastValue = length;
     return true;
