@@ -27,7 +27,7 @@ export async function prepareNextPeriod(page: Page, sport: ISport) {
     timeout: 0,
   });
 
-  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {});
 
   const seances = await page.$$eval("table", (el: any) => {
     const table = el[1] as HTMLTableElement;
