@@ -3,7 +3,7 @@ import { CRENEAUX_URL } from "../data/constants";
 import { ISeance, ISport } from "../types/types";
 import { log } from "../utils";
 import { goToSportMainPage } from "./sportMainPage";
-import { sendMessageManagement } from "../telegram/telegramBot";
+// import { sendMessageManagement } from "../telegram/telegramBot";
 
 export async function prepareNextPeriod(page: Page, sport: ISport) {
   const slotsSelector = await page.waitForSelector("#liste_periodes", {
@@ -23,11 +23,9 @@ export async function prepareNextPeriod(page: Page, sport: ISport) {
 
   sport.next_period = slots[slots.length - 1];
   sport.next_period.url = `${CRENEAUX_URL}&niveau=${sport.niveau}&periode=${sport.next_period.period_id}&tarif=${sport.tarif}`;
-
   await page.goto(sport.next_period.url!, {
     timeout: 0,
   });
-
   await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {});
 
   const seances = await page.$$eval("table", (el: any) => {
@@ -91,11 +89,10 @@ export async function checkSport(page: Page, sport: ISport) {
     ]);
 
     sport.ready = false;
-    // if (length > sport.lastValue)
-    sport.ready = true;
-    // else log(["Nothing to do here"]);
+    if (length > sport.lastValue) sport.ready = true;
+    else log(["Nothing to do here"]);
     sport.lastValue = length;
-    return true;
+    return;
   } catch (err) {
     log(["Error in checkSport: ", sport.name]);
     throw err;

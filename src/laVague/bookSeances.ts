@@ -5,12 +5,12 @@ import { ISport } from "../types/types";
 import { log } from "../utils";
 
 export async function bookASeance(page: Page, sport: ISport, i: number) {
-  await page.waitForNetworkIdle({ timeout: 0 });
   // if (page.url !== )
-  await page.goto(sport.next_period.url!, {
-    timeout: 0,
-  });
-  await page.waitForNetworkIdle({ timeout: 0 });
+  await page
+    .goto(sport.next_period.url!, {
+      timeout: 10_000,
+    })
+    .catch(() => log(["done waiting for goto sport.next_period_url"]));
 
   const buttons = await page.$$("table tbody tr td table tbody tr td img");
 
@@ -31,15 +31,22 @@ export async function bookASeance(page: Page, sport: ISport, i: number) {
     }
   );
   await validate?.click();
-  await page.waitForNetworkIdle({ timeout: 0 });
-  const result = await page.goto(CONFIRM_BOOK_URL, { timeout: 0 });
-  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {
+    log(["waiting for click done"]);
+  });
+  const result = await page
+    .goto(CONFIRM_BOOK_URL, { timeout: 10_000 })
+    .catch(() => {
+      log([`Goto ${CONFIRM_BOOK_URL}, didn't work`]);
+    });
+  await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {
+    log(["confirming book done"]);
+  });
   if (result?.status) console.log(result.status());
   return result?.status();
 }
 
 export async function bookSeances(page: Page, sport: ISport) {
-  console.log("here");
   if (sport.next_period.seances === undefined) {
     sendMessageManagement("Sport ready but no seances found");
     return;

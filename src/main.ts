@@ -2,7 +2,11 @@ import { Browser } from "puppeteer";
 import startBrowser from "./browser/startBrowser";
 import { log, sleepHours, sleepMinutes, sleepSeconds } from "./utils";
 import moment from "moment";
-import { activateBot, sendMessageManagement } from "./telegram/telegramBot";
+import {
+  activateBot,
+  sendMessage,
+  sendMessageManagement,
+} from "./telegram/telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { checkSport, prepareNextPeriod } from "./laVague/watcher";
 import { sports } from "./data/sports";
@@ -45,6 +49,7 @@ async function main() {
             await checkSport(page, sports[i])
           );
           if (sports[i].ready) {
+            await sendMessage("I can book a seance for " + sports[i].name);
             await prepareNextPeriod(page, sports[i]);
             await bookSeances(page, sports[i]);
           } else ready = false;
