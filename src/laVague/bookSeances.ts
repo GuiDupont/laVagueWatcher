@@ -39,6 +39,7 @@ export async function bookASeance(page: Page, sport: ISport, i: number) {
 }
 
 export async function bookSeances(page: Page, sport: ISport) {
+  console.log("here");
   if (sport.next_period.seances === undefined) {
     sendMessageManagement("Sport ready but no seances found");
     return;

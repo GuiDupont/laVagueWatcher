@@ -3,7 +3,7 @@ import { Browser, PuppeteerNode } from "puppeteer";
 import { getPath, log } from "../utils";
 const puppeteer: PuppeteerNode = require("puppeteer");
 
-async function startBrowser(headless: boolean = true) {
+async function startBrowser(headless: boolean = false) {
   try {
     log(["opening browser..."]);
     const browser: Browser = await puppeteer.launch({

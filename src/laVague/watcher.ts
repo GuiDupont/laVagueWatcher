@@ -90,8 +90,9 @@ export async function checkSport(page: Page, sport: ISport) {
     ]);
 
     sport.ready = false;
-    if (length > sport.lastValue) sport.ready = true;
-    else log(["Nothing to do here"]);
+    // if (length > sport.lastValue)
+    sport.ready = true;
+    // else log(["Nothing to do here"]);
     sport.lastValue = length;
     return true;
   } catch (err) {
