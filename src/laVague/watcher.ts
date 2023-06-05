@@ -3,6 +3,7 @@ import { CRENEAUX_URL } from "../data/constants";
 import { ISeance, ISport } from "../types/types";
 import { log } from "../utils";
 import { goToSportMainPage } from "./sportMainPage";
+import { sendMessageManagement } from "../telegram/telegramBot";
 
 export async function prepareNextPeriod(page: Page, sport: ISport) {
   const slotsSelector = await page.waitForSelector("#liste_periodes", {
@@ -27,7 +28,7 @@ export async function prepareNextPeriod(page: Page, sport: ISport) {
     timeout: 0,
   });
 
-  await page.waitForNetworkIdle({ timeout: 0 });
+  await page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {});
 
   const seances = await page.$$eval("table", (el: any) => {
     const table = el[1] as HTMLTableElement;
