@@ -6,6 +6,7 @@ interface ISport {
   id: number;
   next_period: IPeriod;
   ready: boolean;
+  booked: boolean;
   niveau: number;
   creneaux: ICreneaux[];
 }
@@ -27,6 +28,7 @@ interface IPeriod {
   begin_end: string;
   period_id: string;
   url?: string;
+  wantedSeancesIndexes?: number[];
   seances?: ISeance[];
 }
 

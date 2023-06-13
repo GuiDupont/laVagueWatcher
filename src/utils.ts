@@ -8,6 +8,10 @@ export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function daysInMinutes(days: number) {
+  return days * 24 * 60;
+}
+
 export async function sleepSeconds(seconds: number) {
   return sleep(1000 * seconds);
 }
@@ -38,7 +42,11 @@ export function formatDayDate(s: string) {
 
 export function log(messages: any[] | string) {
   // if (!onMac()) return;
-  if (typeof messages === "string") messages = [messages];
+  if (typeof messages === "string")
+    console.log("[" + moment().format() + "] ", messages);
+  else console.log("[" + moment().format() + "] ", ...messages);
+}
 
-  console.log("[" + moment().format() + "] ", ...messages);
+export function inTestEnv() {
+  return process.argv.includes("test");
 }

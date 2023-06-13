@@ -1,7 +1,8 @@
-import { Telegraf } from "telegraf";
+import { Context, Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sports } from "../data/sports";
 import { log } from "../utils";
+import { Update } from "telegraf/typings/core/types/typegram";
 
 dotenv.config();
 

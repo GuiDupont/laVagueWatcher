@@ -1,16 +1,26 @@
+import moment from "moment";
+import { sendMessageManagement } from "../telegram/telegramBot";
 import { ISport } from "../types/types";
 
-// time to sleep in minutes
+function isSleepTime() {
+  const currentHour = moment().hours();
+  return currentHour >= 22 && currentHour <= 24;
+}
 
-export function timeToSleep(sports: ISport[]) {
-  if (
-    process.env.SLEEP_MINUTES !== "0" &&
-    process.env.SLEEP_MINUTES !== undefined
-  ) {
-    const sleep = parseInt(process.env.SLEEP_MINUTES!);
-    process.env.SLEEP_MINUTES = "0";
-    return sleep;
+function isExceptionnalSleepSet() {
+  return (
+    process.env.EXCEPTIONNAL_SLEEP !== "0" &&
+    process.env.EXCEPTIONNAL_SLEEP !== undefined
+  );
+}
+
+export function minutesToSleep(sports: ISport[]) {
+  if (isSleepTime()) return 60 * 8; // 8 hours
+  if (isExceptionnalSleepSet()) {
+    process.env.EXCEPTIONNAL_SLEEP = "0";
+    return parseInt(process.env.EXCEPTIONNAL_SLEEP!);
   }
+
   let oneSportIsNotReady = false;
   let oneSportIsReady = false;
   let fastMode = false;

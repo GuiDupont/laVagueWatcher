@@ -1,92 +1,66 @@
-import { Browser } from "puppeteer";
-import startBrowser from "./browser/startBrowser";
-import { log, sleepHours, sleepMinutes, sleepSeconds } from "./utils";
+import { log, sleepMinutes, sleepSeconds } from "./utils";
 import moment from "moment";
-import {
-  activateBot,
-  sendMessage,
-  sendMessageManagement,
-} from "./telegram/telegramBot";
+import { activateBot, sendMessageManagement } from "./telegram/telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { checkSport, prepareNextPeriod } from "./laVague/watcher";
 import { sports } from "./data/sports";
-import { loginLaVague } from "./laVague/login";
-import { bookSeances } from "./laVague/bookSeances";
-import { timeToSleep } from "./laVague/timeToSleep";
+import { minutesToSleep } from "./laVague/timeToSleep";
+import { seancesChecker } from "./seancesChecker";
+import { daysInMinutes } from "./utils";
 
 dotenv.config();
 
-let browser: Browser | undefined;
+export let checker: seancesChecker = new seancesChecker();
 
 process.env.program_status = "SETTING UP";
 
+async function setUp() {
+  process.on("SIGINT", function () {
+    checker!.browser?.close();
+    process.exit();
+  });
+  moment.locale("fr");
+  await activateBot();
+  if (process.platform !== "darwin")
+    await sendMessageManagement("[Let's get back to work]");
+}
+
+async function closeBrowser() {
+  try {
+    if (checker) await checker.browser?.close();
+  } catch (error) {
+    log(["error while closing: ", error]);
+  }
+}
+
+async function launchProgram() {
+  while (1) {
+    try {
+      let checker: seancesChecker = await new seancesChecker().init();
+      await checker.loginLaVague();
+      await checker.goToActivityPage();
+      await checker.checkSportsReadiness();
+      await checker.bookSportsReady();
+      checker.booker!.checkIfBookingIsOverForAllSports();
+      if (checker.booker?.isOver) {
+        await checker.clear();
+        process.env.EXCEPTIONNAL_SLEEP = daysInMinutes(4).toString();
+      }
+    } catch (err: any) {
+      if (checker) await checker.clear();
+      log((err as Error).message);
+      await sleepSeconds(60);
+      continue;
+    }
+
+    process.env.last_check = moment().format("LLLL");
+    await sleepMinutes(minutesToSleep(sports));
+  }
+}
+
 async function main() {
   try {
-    moment.locale("fr");
-    await activateBot();
-    if (process.platform !== "darwin")
-      await sendMessageManagement("[Let's get back to work]");
-
-    while (1) {
-      if (moment().hours() >= 22 && moment().hours() <= 24) {
-        await sendMessageManagement("Good night");
-        await sleepHours(8);
-        await sendMessageManagement("[Let's get back to work]");
-      }
-      try {
-        browser = await startBrowser().catch((e) => {
-          log(["start Browser: ", e]);
-          return undefined;
-        });
-        if (!browser) continue;
-        let page = await loginLaVague(browser);
-        process.env.program_status = "CHECKING";
-        let ready = true;
-        for (let i = 0; i < sports.length; i++) {
-          if (sports[i].ready) continue;
-          console.log(
-            "check sport promise:",
-            await checkSport(page, sports[i])
-          );
-          if (sports[i].ready) {
-            await sendMessage("I can book a seance for " + sports[i].name);
-            await prepareNextPeriod(page, sports[i]);
-            await bookSeances(page, sports[i]);
-          } else ready = false;
-        }
-
-        if (ready) {
-          if (!page.isClosed) await page.close();
-          if (browser) await browser?.close();
-          await sleepHours(4 * 24);
-          sports.forEach((s) => (s.ready = false));
-          sendMessageManagement(
-            "EveryThing is cleand up, let's get back to work"
-          );
-        }
-        log("Everything went well");
-        if (!page.isClosed) await page.close();
-        if (!page.isClosed) console.log(page.url());
-        else console.log("page is closed");
-      } catch (err: any) {
-        try {
-          if (browser) await browser?.close();
-        } catch (e) {
-          log(["error while closing: ", e]);
-        }
-        log([(err as Error).message]);
-        await sleepSeconds(60);
-        continue;
-      }
-
-      try {
-        if (browser) await browser?.close();
-      } catch (e) {
-        log(["error while closing: ", e]);
-      }
-      process.env.last_check = moment().format("LLLL");
-      await sleepMinutes(timeToSleep(sports));
-    }
+    setUp();
+    await launchProgram();
   } catch (e) {}
 }
 
