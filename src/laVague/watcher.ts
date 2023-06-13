@@ -1,6 +1,8 @@
 import { Page } from "puppeteer";
 import { CRENEAUX_URL } from "../data/constants";
 import { ISeance, ISport } from "../types/types";
+import { log } from "../utils";
+
 // import { sendMessageManagement } from "../telegram/telegramBot";
 
 export async function prepareNextPeriod(page: Page, sport: ISport) {
