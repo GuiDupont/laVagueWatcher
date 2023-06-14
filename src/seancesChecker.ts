@@ -1,5 +1,5 @@
 import { Browser, Page, PuppeteerNode } from "puppeteer";
-import { getPath, inTestEnv, log, sleepSeconds } from "./utils";
+import { getPath, isTest, log, sleepSeconds } from "./utils";
 import { BASE_URL, BOOK_URL } from "./data/constants";
 import { sports as SportsRaw } from "./data/sports";
 import { sendMessage } from "./telegram/telegramBot";
@@ -33,8 +33,6 @@ export class seancesChecker {
         executablePath: getPath(),
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
-
-      log("setting up page...");
     } catch (err) {
       console.log(err);
       throw new Error("could not create a browser instance");
@@ -149,9 +147,9 @@ export class seancesChecker {
     try {
       const length = await this.getListe_periodesLength(sport);
 
-      if (inTestEnv() || length > sport.lastValue) {
+      if (isTest() || length > sport.lastValue) {
         sport.ready = true;
-        await sendMessage("I can book a seance for " + sport.name);
+        await sendMessage("Je peux réserver une séance de " + sport.name);
       } else sport.ready = false;
       sport.lastValue = length;
     } catch (err) {

@@ -1,8 +1,7 @@
 import { Context, Telegraf } from "telegraf";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sports } from "../data/sports";
-import { log } from "../utils";
-import { Update } from "telegraf/typings/core/types/typegram";
+import { log, isTest } from "../utils";
 
 dotenv.config();
 
@@ -13,6 +12,7 @@ export async function sendMessageManagement(message: string) {
 
 export async function sendMessage(message: string) {
   // if (process.platform === "darwin") return;
+  if (isTest()) message = "TEST: " + message;
   const bot = new Telegraf(process.env.BOT_TOKEN!);
   bot.telegram.sendMessage(process.env.CONV_ID!, message);
 }

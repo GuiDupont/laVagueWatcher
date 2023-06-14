@@ -47,6 +47,6 @@ export function log(messages: any[] | string) {
   else console.log("[" + moment().format() + "] ", ...messages);
 }
 
-export function inTestEnv() {
+export function isTest() {
   return process.argv.includes("test");
 }

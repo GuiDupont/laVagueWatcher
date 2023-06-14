@@ -62,10 +62,10 @@ export class seancesBooker {
 
   async bookSportsReady() {
     for (let i = 0; i < this.sports.length; i++) {
-      if (sports[i].ready && sports[i].booked === false) {
-        if (sports[i].next_period.seances === undefined)
+      if (sports[i].ready && !sports[i].booked) {
+        if (sports[i].next_period.seances?.length === 0)
           await prepareNextPeriod(this.page, sports[i]);
-        if (sports[i].next_period.seances !== undefined)
+        if (sports[i].next_period.seances?.length !== 0)
           await this.bookSeances(sports[i]);
       }
     }
