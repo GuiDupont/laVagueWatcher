@@ -5,7 +5,7 @@ import { ISport } from "./types/types";
 export async function sleep(ms: number) {
   process.env.program_status = "SLEEPING";
   const duration = convertTimestampToTimePast(ms);
-  sendMessageManagement(`Sleeping for ${duration} ms`);
+  sendMessageManagement(`Sleeping for ${duration}`);
   log([`Sleeping for ${duration}`]);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

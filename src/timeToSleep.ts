@@ -15,6 +15,7 @@ function isExceptionnalSleepSet() {
 
 export function minutesToSleep(sports: ISport[]) {
   // if (isSleepTime()) return 60 * 8; // 8 hours
+  return 0;
   if (isExceptionnalSleepSet()) {
     const sleep = parseFloat(process.env.EXCEPTIONNAL_SLEEP!);
     process.env.EXCEPTIONNAL_SLEEP = "0";
