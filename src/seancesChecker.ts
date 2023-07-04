@@ -71,10 +71,10 @@ export class seancesChecker {
       this.page.removeAllListeners();
       await this.page.close();
     }
-    // if (this.browser) {
-    //   this.browser.removeAllListeners();
-    //   await this.browser.close();
-    // }
+    if (this.browser) {
+      this.browser.removeAllListeners();
+      await this.browser.close();
+    }
   }
 
   async loginLaVague() {
