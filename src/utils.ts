@@ -1,10 +1,11 @@
 import moment from "moment";
 import { sendMessageManagement } from "./telegram/telegramBot";
+import { ISport } from "./types/types";
 
 export async function sleep(ms: number) {
   process.env.program_status = "SLEEPING";
   sendMessageManagement(`Sleeping for ${ms} ms`);
-  log([`Sleeping for ${ms} ms`]);
+  log([`Sleeping for ${convertTimestampToTimePast(ms)}`]);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -41,7 +42,6 @@ export function formatDayDate(s: string) {
 }
 
 export function log(messages: any[] | string) {
-  // if (!onMac()) return;
   if (typeof messages === "string")
     console.log("[" + moment().format() + "] ", messages);
   else console.log("[" + moment().format() + "] ", ...messages);
@@ -49,4 +49,35 @@ export function log(messages: any[] | string) {
 
 export function isTest() {
   return process.argv.includes("test");
+}
+
+export function isDebug() {
+  return process.argv.includes("debug");
+}
+
+export function nextPeriodIsPrepared(sport: ISport) {
+  return sport.next_period.allSeances?.length !== 0;
+}
+
+export function convertTimestampToTimePast(timestamp: number) {
+  const timestampInSeconds = timestamp / 1000;
+
+  const MINUTE = 60;
+  const HOUR = MINUTE * 60;
+  const DAY = HOUR * 24;
+
+  if (timestampInSeconds >= DAY) {
+    const days = Math.floor(timestampInSeconds / DAY);
+    return `${days} day${days > 1 ? "s" : ""}`;
+  } else if (timestampInSeconds >= HOUR) {
+    const hours = Math.floor(timestampInSeconds / HOUR);
+    return `${hours} hour${hours > 1 ? "s" : ""}`;
+  } else if (timestampInSeconds >= MINUTE) {
+    const minutes = Math.floor(timestampInSeconds / MINUTE);
+    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+  } else {
+    return `${Math.floor(timestampInSeconds)} second${
+      Math.floor(timestampInSeconds) !== 1 ? "s" : ""
+    }`;
+  }
 }

@@ -32,7 +32,8 @@ export async function activateBot() {
       `Rapport\nLe dernier check a eu lieu le ${process.env.last_check}`
     );
     for (let i = 0; i < sports.length; i++) {
-      if (s[i].ready) await ctx.reply(`Le ${s[i].name} est disponible`);
+      if (s[i].readyToBeBooked)
+        await ctx.reply(`Le ${s[i].name} est disponible`);
       else
         await ctx.reply(
           `Le ${s[i].name} n'est pas disponible. ${s[i].lastValue}/3`

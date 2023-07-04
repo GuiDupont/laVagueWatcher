@@ -3,9 +3,10 @@ import moment from "moment";
 import { activateBot, sendMessageManagement } from "./telegram/telegramBot";
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { sports } from "./data/sports";
-import { minutesToSleep } from "./laVague/timeToSleep";
+import { minutesToSleep } from "./timeToSleep";
 import { seancesChecker } from "./seancesChecker";
 import { daysInMinutes } from "./utils";
+import { send } from "process";
 
 dotenv.config();
 
@@ -20,16 +21,7 @@ async function setUp() {
   });
   moment.locale("fr");
   await activateBot();
-  if (process.platform !== "darwin")
-    await sendMessageManagement("[Let's get back to work]");
-}
-
-async function closeBrowser() {
-  try {
-    if (checker) await checker.browser?.close();
-  } catch (error) {
-    log(["error while closing: ", error]);
-  }
+  await sendMessageManagement("[Let's get back to work]");
 }
 
 async function launchProgram() {
@@ -41,18 +33,22 @@ async function launchProgram() {
       await checker.checkSportsReadiness();
       await checker.bookSportsReady();
       checker.booker!.checkIfBookingIsOverForAllSports();
+      process.env.last_check = moment().format("LLLL");
       if (checker.booker?.isOver) {
-        await checker.clear();
+        await checker.resetSports();
+        // process.env.EXCEPTIONNAL_SLEEP = "0";
         process.env.EXCEPTIONNAL_SLEEP = daysInMinutes(4).toString();
       }
     } catch (err: any) {
-      if (checker) await checker.clear();
-      log((err as Error).message);
-      await sleepSeconds(60);
-      continue;
+      sendMessageManagement(
+        "I had an error, I'm restarting the program. Error: " +
+          (err as Error).message
+      );
+      log([(err as Error).message, "error"]);
+      process.env.EXCEPTIONNAL_SLEEP = "0.4";
     }
 
-    process.env.last_check = moment().format("LLLL");
+    if (checker) await checker.close();
     await sleepMinutes(minutesToSleep(sports));
   }
 }

@@ -5,10 +5,10 @@ interface ISport {
   tarif: string;
   id: number;
   next_period: IPeriod;
-  ready: boolean;
-  booked: boolean;
+  readyToBeBooked: boolean;
+  doneBooking: boolean;
   niveau: number;
-  creneaux: ICreneaux[];
+  creneauxWanted: ICreneaux[];
 }
 
 interface ISeance {
@@ -28,8 +28,8 @@ interface IPeriod {
   begin_end: string;
   period_id: string;
   url?: string;
-  wantedSeancesIndexes?: number[];
-  seances?: ISeance[];
+  wantedAndAvailableSeancesIndexes: number[];
+  allSeances?: ISeance[];
 }
 
 export { ISport, IPeriod, ISeance };

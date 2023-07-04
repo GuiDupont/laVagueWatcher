@@ -1,11 +1,11 @@
 import { Browser, Page, PuppeteerNode } from "puppeteer";
-import { getPath, isTest, log, sleepSeconds } from "./utils";
+import { getPath, isTest, log, sleep, sleepSeconds } from "./utils";
 import { BASE_URL, BOOK_URL } from "./data/constants";
 import { sports as SportsRaw } from "./data/sports";
 import { sendMessage } from "./telegram/telegramBot";
 import { seancesBooker } from "./seancesBooker";
 import { ISport } from "./types/types";
-import { goToSportMainPage } from "./laVague/sportMainPage";
+
 const puppeteer: PuppeteerNode = require("puppeteer");
 
 export class seancesChecker {
@@ -21,9 +21,9 @@ export class seancesChecker {
     await this.setPage();
     return this;
   }
+
   async setUpBrowser() {
-    let headless = true;
-    if (process.argv[2].includes("test")) headless = false;
+    let headless = isTest() ? false : true;
     try {
       log("opening browser...");
       this.browser = await puppeteer.launch({
@@ -34,7 +34,7 @@ export class seancesChecker {
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
     } catch (err) {
-      console.log(err);
+      log([err]);
       throw new Error("could not create a browser instance");
     }
   }
@@ -60,97 +60,153 @@ export class seancesChecker {
     });
   }
 
-  async clear() {
-    this.closePup();
+  async resetSports() {
     this.sports = SportsRaw;
   }
 
-  private async closePup() {
-    if (this.page) await this.page.close();
-    if (this.browser) await this.browser.close();
+  async close() {
+    if (this.page) {
+      this.page.removeAllListeners();
+      await this.page.close();
+    }
+    if (this.browser) {
+      this.browser.removeAllListeners();
+      await this.browser.close();
+    }
   }
 
   async loginLaVague() {
     if (!this.page) throw new Error("page is undefined");
-    await this.page.goto(BASE_URL, {
-      timeout: 0,
-    });
-    const email = await this.page.waitForSelector('input[name="email"]', {
-      timeout: 0,
-    });
-    await email?.type(process.env.EMAIL!);
-    const password = await this.page.waitForSelector('input[name="password"]', {
-      timeout: 0,
-    });
-    await password?.type(process.env.PASSWORD!);
-    const submit = await this.page.waitForSelector('input[value="CONNEXION"]', {
-      timeout: 0,
-    });
-    if (submit) {
-      await submit?.click();
+
+    try {
       await this.page
-        .waitForNetworkIdle({ timeout: 10_000 })
-        .catch(() => console.log("fail"));
+        .goto(BASE_URL, {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't go to base url");
+        });
+      const email = await this.page
+        .waitForSelector('input[name="email"]', {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't get email input");
+        });
+      await email?.type(process.env.EMAIL!).catch(() => {
+        throw new Error("Can't type email");
+      });
+      const password = await this.page
+        .waitForSelector('input[name="password"]', {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't get password input");
+        });
+      await password?.type(process.env.PASSWORD!).catch(() => {
+        throw new Error("Can't type password");
+      });
+      const submit = await this.page
+        .waitForSelector('input[value="CONNEXION"]', {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't get submit button");
+        });
+      if (submit) {
+        await submit?.click().catch(() => {
+          throw new Error("Can't click submit button");
+        });
+        await this.page!.waitForNetworkIdle({ timeout: 10_000 }).catch(
+          () => null
+        ); // wait necessary but can't tell why
+      }
+    } catch (err: any) {
+      log(["Err", err.message]);
+      throw new Error("Error : loginLaVague");
     }
   }
 
   async goToActivityPage() {
     if (!this.page) throw new Error("page is undefined");
-    await this.page
-      .goto(BOOK_URL, {
-        timeout: 0,
-      })
-      .catch(() => log(["in go to book url fail"]));
-
-    const oui = await this.page
-      .waitForSelector("text/OUI", { timeout: 2_000 })
-      .catch(() => null);
-    if (oui) {
-      await oui.click();
-      await this.page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
-    } else await sleepSeconds(3);
-
-    const continuer = await this.page.waitForSelector(
-      'input[value="CONTINUER"]',
-      {
-        timeout: 0,
-      }
-    );
-    await continuer?.click();
-    await this.page.waitForNavigation({ timeout: 2_000 }).catch(() => null);
-    await this.page.waitForNetworkIdle({ timeout: 2_000 }).catch(() => null);
+    try {
+      await this.page
+        .goto(BOOK_URL, {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't go to book url");
+        });
+    } catch (err) {
+      log(["Error : ", err]);
+      throw new Error("Error : go to activity page");
+    }
+    try {
+      await this.handleModuleInscriptionResidence();
+    } catch (err) {
+      log(["Error : handle module Inscription residence", err]);
+      throw new Error("Error : go to activity page");
+    }
   }
 
-  async getListe_periodesLength(sport: ISport) {
-    log(["Let's check " + sport.name]);
+  async handleModuleInscriptionResidence() {
     if (!this.page) throw new Error("page is undefined");
 
-    await goToSportMainPage(this.page, sport).catch(() => {
-      log(["Error in goToSportMainPage"]);
-    });
-    log(["after goToSportMainPage"]);
-    log(["I am in " + sport.name + " page"]);
-    const slots = await this.page.waitForSelector("#liste_periodes", {
-      timeout: 0,
-    });
-    log(["I have slots " + sport.name + " page"]);
-    if (!slots) return 0;
+    const oui = await this.page
+      .waitForSelector("text/OUI", { timeout: 10_000 })
+      .catch(() => {
+        throw new Error("Can't find OUI button");
+      });
 
-    let length = await slots?.evaluate((el) => {
-      return el.children.length;
+    if (oui) {
+      await oui.click().catch(() => {
+        throw new Error("Can't click OUI button");
+      });
+      // await this.page
+      //   .waitForNetworkIdle({ timeout: 5_000 })
+      //   .catch(() => log("wait network idle 5_000, handle inscription"));
+    }
+
+    const continuer = await this.page
+      .waitForSelector('input[value="CONTINUER"]', {
+        timeout: 15_000,
+      })
+      .catch(() => {
+        throw new Error("Can't find CONTINUER button");
+      });
+
+    await continuer?.click().catch(() => {
+      throw new Error("Can't click CONTINUER button");
     });
-    if (length === undefined) throw new Error("length is undefined");
-    return length;
+    await this.page
+      .waitForNavigation({ timeout: 4_000 })
+      .catch(() => log("catch navigation"));
+    await this.page
+      .waitForNetworkIdle({ timeout: 4_000 })
+      .catch(() => log("catch network idle handleModuleInscriptionResidence"));
+  }
+
+  async checkSportsReadiness() {
+    for (let i = 0; i < this.sports.length; i++) {
+      try {
+        if (this.sports[i].readyToBeBooked) continue;
+        await this.checkSportReadiness(this.sports[i]);
+      } catch (err: any) {
+        log(["Error in checkSportsReadiness", err.message]);
+      }
+      // this.checkCheckingIsOver();
+    }
   }
 
   async checkSportReadiness(sport: ISport) {
     try {
       const length = await this.getListe_periodesLength(sport);
-
+      log([sport.name, length]);
       if (isTest() || length > sport.lastValue) {
-        sport.ready = true;
-        await sendMessage("Je peux réserver une séance de " + sport.name);
-      } else sport.ready = false;
+        sport.readyToBeBooked = true;
+        if (!isTest())
+          await sendMessage("Je peux réserver une séance de " + sport.name);
+      } else sport.readyToBeBooked = false;
       sport.lastValue = length;
     } catch (err) {
       log(["Error in checkSport: ", sport.name]);
@@ -158,23 +214,65 @@ export class seancesChecker {
     }
   }
 
-  checkCheckingIsOver() {
-    this.checkingIsOver = true;
-    this.sports.forEach((s: ISport) => {
-      if (!s.booked) this.checkingIsOver = false;
+  async getListe_periodesLength(sport: ISport) {
+    if (!this.page) throw new Error("page is undefined");
+    await this.goToSportMainPage(sport).catch(() => {
+      // log(["Error in goToSportMainPage"]);
+      throw new Error("Error in goToSportMainPage");
     });
+    const slots = await this.page
+      .waitForSelector("#liste_periodes", {
+        timeout: 15_000,
+      })
+      .catch(() => {
+        throw new Error("Can't find #liste_periodes");
+      });
+    let length = await slots
+      ?.evaluate((el) => {
+        return el.children.length;
+      })
+      .catch(() => {
+        throw new Error("Can't evaluate slots length");
+      });
+    if (length === undefined) throw new Error("length is undefined");
+    return length;
   }
 
-  async checkSportsReadiness() {
-    for (let i = 0; i < this.sports.length; i++) {
-      if (this.sports[i].booked || this.sports[i].ready) continue;
-      await this.checkSportReadiness(this.sports[i]);
-      this.checkCheckingIsOver();
+  async goToSportMainPage(sport: ISport) {
+    if (!this.page) throw new Error("page is undefined");
+
+    try {
+      await this.page
+        .goto(sport.url, {
+          timeout: 15_000,
+        })
+        .catch(() => {
+          throw new Error("Can't go to sport url");
+        });
+
+      if (
+        this.page.url() ===
+        "https://moncentreaquatique.com/module-inscriptions/residence/"
+      ) {
+        this.handleModuleInscriptionResidence();
+        await this.page
+          .goto(sport.url, {
+            timeout: 15_000,
+          })
+          .catch(() => {
+            throw new Error("Can't go to sport url");
+          });
+      }
+    } catch (e) {
+      log(["error here", e]);
+      throw e;
     }
   }
 
   async bookSportsReady() {
-    this.booker = new seancesBooker(this.page!, this.sports);
+    if (!this.page) throw new Error("page is undefined");
+
+    this.booker = new seancesBooker(this.page, this.sports, this);
     await this.booker.bookSportsReady();
   }
 }

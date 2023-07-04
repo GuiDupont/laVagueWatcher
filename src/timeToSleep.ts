@@ -1,6 +1,5 @@
 import moment from "moment";
-import { sendMessageManagement } from "../telegram/telegramBot";
-import { ISport } from "../types/types";
+import { ISport } from "./types/types";
 
 function isSleepTime() {
   const currentHour = moment().hours();
@@ -15,9 +14,10 @@ function isExceptionnalSleepSet() {
 }
 
 export function minutesToSleep(sports: ISport[]) {
+  // return 0;
   if (isSleepTime()) return 60 * 8; // 8 hours
   if (isExceptionnalSleepSet()) {
-    const sleep = parseInt(process.env.EXCEPTIONNAL_SLEEP!);
+    const sleep = parseFloat(process.env.EXCEPTIONNAL_SLEEP!);
     process.env.EXCEPTIONNAL_SLEEP = "0";
     return sleep;
   }
@@ -26,11 +26,11 @@ export function minutesToSleep(sports: ISport[]) {
   let oneSportIsReady = false;
   let fastMode = false;
   sports.forEach((sport) => {
-    if (sport.ready) oneSportIsReady = true;
+    if (sport.readyToBeBooked) oneSportIsReady = true;
     else oneSportIsNotReady = true;
     if (sport.lastValue === 2) fastMode = true;
   });
   if (!fastMode) return 60; // slow mode
-  else if (oneSportIsReady && oneSportIsNotReady) return 1; // urgence !!
-  else return 5; // fast mode
+  else if (oneSportIsReady && oneSportIsNotReady) return 0; // urgence !!
+  else return 0; // fast mode
 }
