@@ -183,9 +183,7 @@ export class seancesChecker {
     await this.page
       .waitForNavigation({ timeout: 4_000 })
       .catch(() => log("catch navigation"));
-    await this.page
-      .waitForNetworkIdle({ timeout: 4_000 })
-      .catch(() => log("catch network idle handleModuleInscriptionResidence"));
+    await this.page.waitForNetworkIdle({ timeout: 4_000 }).catch(() => null);
   }
 
   async checkSportsReadiness() {
