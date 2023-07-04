@@ -25,10 +25,10 @@ async function setUp() {
 }
 
 async function launchProgram() {
+  let checker: seancesChecker = await new seancesChecker().init();
   while (1) {
     try {
-      let checker: seancesChecker = await new seancesChecker().init();
-      await checker.loginLaVague();
+      if (checker.page?.url() === "about:blank") await checker.loginLaVague();
       await checker.goToActivityPage();
       await checker.checkSportsReadiness();
       await checker.bookSportsReady();
@@ -44,11 +44,13 @@ async function launchProgram() {
         "I had an error, I'm restarting the program. Error: " +
           (err as Error).message
       );
+      if (checker) await checker.close();
+
+      checker = await new seancesChecker().init();
       log([(err as Error).message, "error"]);
       process.env.EXCEPTIONNAL_SLEEP = "0.4";
     }
 
-    if (checker) await checker.close();
     await sleepMinutes(minutesToSleep(sports));
   }
 }

@@ -1,5 +1,5 @@
 import { Browser, Page, PuppeteerNode } from "puppeteer";
-import { getPath, isTest, log, sleep, sleepSeconds } from "./utils";
+import { getPath, isTest, log } from "./utils";
 import { BASE_URL, BOOK_URL } from "./data/constants";
 import { sports as SportsRaw } from "./data/sports";
 import { sendMessage } from "./telegram/telegramBot";
@@ -204,7 +204,7 @@ export class seancesChecker {
     try {
       const length = await this.getListe_periodesLength(sport);
       log([sport.name, length]);
-      if (isTest() || length > sport.lastValue) {
+      if (length > sport.lastValue) {
         sport.readyToBeBooked = true;
         if (!isTest())
           await sendMessage("Je peux réserver une séance de " + sport.name);
