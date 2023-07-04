@@ -25,14 +25,16 @@ export class seancesChecker {
   async setUpBrowser() {
     let headless = isTest() ? false : true;
     try {
-      log("opening browser...");
-      this.browser = await puppeteer.launch({
-        headless: headless,
-        defaultViewport: null,
-        // userDataDir: "./chrome_data",
-        executablePath: getPath(),
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
+      if (!this.browser) {
+        log("opening browser...");
+        this.browser = await puppeteer.launch({
+          headless: headless,
+          defaultViewport: null,
+          // userDataDir: "./chrome_data",
+          executablePath: getPath(),
+          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
+      }
     } catch (err) {
       log([err]);
       throw new Error("could not create a browser instance");
@@ -69,10 +71,10 @@ export class seancesChecker {
       this.page.removeAllListeners();
       await this.page.close();
     }
-    if (this.browser) {
-      this.browser.removeAllListeners();
-      await this.browser.close();
-    }
+    // if (this.browser) {
+    //   this.browser.removeAllListeners();
+    //   await this.browser.close();
+    // }
   }
 
   async loginLaVague() {
