@@ -4,8 +4,9 @@ import { ISport } from "./types/types";
 
 export async function sleep(ms: number) {
   process.env.program_status = "SLEEPING";
-  sendMessageManagement(`Sleeping for ${ms} ms`);
-  log([`Sleeping for ${convertTimestampToTimePast(ms)}`]);
+  const duration = convertTimestampToTimePast(ms);
+  sendMessageManagement(`Sleeping for ${duration} ms`);
+  log([`Sleeping for ${duration}`]);
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
