@@ -78,6 +78,7 @@ export class seancesChecker {
   }
 
   async loginLaVague() {
+    log("login la vague");
     if (!this.page) throw new Error("page is undefined");
 
     try {
@@ -130,6 +131,7 @@ export class seancesChecker {
   }
 
   async goToActivityPage() {
+    log("go to activity page");
     if (!this.page) throw new Error("page is undefined");
     try {
       await this.page
@@ -152,6 +154,7 @@ export class seancesChecker {
   }
 
   async handleModuleInscriptionResidence() {
+    log("handle module inscription residence");
     if (!this.page) throw new Error("page is undefined");
 
     const oui = await this.page
@@ -187,6 +190,7 @@ export class seancesChecker {
   }
 
   async checkSportsReadiness() {
+    log("check sports readiness");
     for (let i = 0; i < this.sports.length; i++) {
       try {
         if (this.sports[i].readyToBeBooked) continue;
@@ -194,12 +198,12 @@ export class seancesChecker {
       } catch (err: any) {
         log(["Error in checkSportsReadiness", err.message]);
       }
-      // this.checkCheckingIsOver();
     }
   }
 
   async checkSportReadiness(sport: ISport) {
     try {
+      log(["checkSportReadiness", sport.name]);
       const length = await this.getListe_periodesLength(sport);
       log([sport.name, length]);
       if (length > sport.lastValue) {
@@ -217,7 +221,6 @@ export class seancesChecker {
   async getListe_periodesLength(sport: ISport) {
     if (!this.page) throw new Error("page is undefined");
     await this.goToSportMainPage(sport).catch(() => {
-      // log(["Error in goToSportMainPage"]);
       throw new Error("Error in goToSportMainPage");
     });
     const slots = await this.page
@@ -239,6 +242,7 @@ export class seancesChecker {
   }
 
   async goToSportMainPage(sport: ISport) {
+    log(["goToSportMainPage", sport.name]);
     if (!this.page) throw new Error("page is undefined");
 
     try {
@@ -270,6 +274,7 @@ export class seancesChecker {
   }
 
   async bookSportsReady() {
+    log("book sports ready");
     if (!this.page) throw new Error("page is undefined");
 
     this.booker = new seancesBooker(this.page, this.sports, this);
