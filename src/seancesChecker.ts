@@ -219,6 +219,7 @@ export class seancesChecker {
   }
 
   async getListe_periodesLength(sport: ISport) {
+    log(["getListe_periodesLength", sport.name]);
     if (!this.page) throw new Error("page is undefined");
     await this.goToSportMainPage(sport).catch(() => {
       throw new Error("Error in goToSportMainPage");
@@ -230,6 +231,7 @@ export class seancesChecker {
       .catch(() => {
         throw new Error("Can't find #liste_periodes");
       });
+    log("before evaluate");
     let length = await slots
       ?.evaluate((el) => {
         return el.children.length;
@@ -237,6 +239,8 @@ export class seancesChecker {
       .catch(() => {
         throw new Error("Can't evaluate slots length");
       });
+    log("after evaluate");
+
     if (length === undefined) throw new Error("length is undefined");
     return length;
   }
