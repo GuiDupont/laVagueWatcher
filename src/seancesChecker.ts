@@ -134,6 +134,7 @@ export class seancesChecker {
     log("go to activity page");
     if (!this.page) throw new Error("page is undefined");
     try {
+      log("before goto book url");
       await this.page
         .goto(BOOK_URL, {
           timeout: 15_000,
@@ -141,6 +142,7 @@ export class seancesChecker {
         .catch(() => {
           throw new Error("Can't go to book url");
         });
+      log("after goto book url");
     } catch (err) {
       log(["Error : ", err]);
       throw new Error("Error : go to activity page");
@@ -163,15 +165,14 @@ export class seancesChecker {
         throw new Error("Can't find OUI button");
       });
 
+    log("before click oui");
     if (oui) {
       await oui.click().catch(() => {
         throw new Error("Can't click OUI button");
       });
-      // await this.page
-      //   .waitForNetworkIdle({ timeout: 5_000 })
-      //   .catch(() => log("wait network idle 5_000, handle inscription"));
+      log("after click oui");
     }
-
+    log("before waitForSelector input value");
     const continuer = await this.page
       .waitForSelector('input[value="CONTINUER"]', {
         timeout: 15_000,
@@ -179,14 +180,17 @@ export class seancesChecker {
       .catch(() => {
         throw new Error("Can't find CONTINUER button");
       });
-
+    log("before click continuer");
     await continuer?.click().catch(() => {
       throw new Error("Can't click CONTINUER button");
     });
+    log("after click continuer");
     await this.page
       .waitForNavigation({ timeout: 4_000 })
       .catch(() => log("catch navigation"));
+    log("after waitForNavigation");
     await this.page.waitForNetworkIdle({ timeout: 4_000 }).catch(() => null);
+    log("after waitForNetworkIdle");
   }
 
   async checkSportsReadiness() {
@@ -224,6 +228,7 @@ export class seancesChecker {
     await this.goToSportMainPage(sport).catch(() => {
       throw new Error("Error in goToSportMainPage");
     });
+    log("before waitForSelector");
     const slots = await this.page
       .waitForSelector("#liste_periodes", {
         timeout: 15_000,
@@ -239,6 +244,7 @@ export class seancesChecker {
       .catch(() => {
         throw new Error("Can't evaluate slots length");
       });
+
     log("after evaluate");
 
     if (length === undefined) throw new Error("length is undefined");
@@ -250,6 +256,7 @@ export class seancesChecker {
     if (!this.page) throw new Error("page is undefined");
 
     try {
+      log("before goto sport url");
       await this.page
         .goto(sport.url, {
           timeout: 15_000,
@@ -257,7 +264,7 @@ export class seancesChecker {
         .catch(() => {
           throw new Error("Can't go to sport url");
         });
-
+      log("after goto sport url");
       if (
         this.page.url() ===
         "https://moncentreaquatique.com/module-inscriptions/residence/"
