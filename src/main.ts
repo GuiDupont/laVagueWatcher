@@ -6,11 +6,10 @@ import { sports } from "./data/sports";
 import { minutesToSleep } from "./timeToSleep";
 import { seancesChecker } from "./seancesChecker";
 import { daysInMinutes } from "./utils";
-import { send } from "process";
 
 dotenv.config();
 
-export let checker: seancesChecker = new seancesChecker();
+export let checker: seancesChecker;
 
 process.env.program_status = "SETTING UP";
 
@@ -56,8 +55,9 @@ async function launchProgram() {
 }
 
 async function main() {
+  checker = new seancesChecker();
   await sleepSeconds(10);
-  return 0;
+  process.exit(1);
   try {
     setUp();
     await launchProgram();
@@ -66,6 +66,4 @@ async function main() {
   }
 }
 
-main()
-  .catch((e) => console.log("error: " + e))
-  .finally();
+main();
