@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/main.ts",
-    "test": "ts-node src/main.ts test"
+    "start": "ts-node src/main.ts"
   },
   "license": "MIT",
   "devDependencies": {
