@@ -55,9 +55,9 @@ async function launchProgram() {
 }
 
 async function main() {
-  checker = new seancesChecker();
   await sleepSeconds(10);
   process.exit(1);
+  checker = new seancesChecker();
   try {
     setUp();
     await launchProgram();
