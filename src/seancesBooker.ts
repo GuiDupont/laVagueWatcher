@@ -12,7 +12,6 @@ import {
   sleepSeconds,
 } from "./utils";
 import { CONFIRM_BOOK_URL, CRENEAUX_URL } from "./data/constants";
-const puppeteer: PuppeteerNode = require("puppeteer");
 
 export class seancesBooker {
   page: Page;

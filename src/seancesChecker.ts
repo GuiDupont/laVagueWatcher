@@ -6,8 +6,6 @@ import { sendMessage } from "./telegram/telegramBot";
 import { seancesBooker } from "./seancesBooker";
 import { ISport } from "./types/types";
 
-const puppeteer: PuppeteerNode = require("puppeteer");
-
 export class seancesChecker {
   browser: Browser | undefined;
   page: Page | undefined;
@@ -23,6 +21,8 @@ export class seancesChecker {
   }
 
   async setUpBrowser() {
+    const puppeteer: PuppeteerNode = require("puppeteer");
+
     let headless = isTest() ? false : true;
     try {
       if (!this.browser) {
