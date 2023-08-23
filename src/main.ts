@@ -35,7 +35,7 @@ async function launchProgram() {
       process.env.last_check = moment().format("LLLL");
       if (checker.booker?.isOver) {
         await checker.resetSports();
-        // process.env.EXCEPTIONNAL_SLEEP = "0";
+        // process.env.EXCEPTIONNAL_SLEEP = "";
         process.env.EXCEPTIONNAL_SLEEP = daysInMinutes(4).toString();
       }
     } catch (err: any) {
@@ -47,7 +47,7 @@ async function launchProgram() {
 
       checker = await new seancesChecker().init();
       log([(err as Error).message, "error"]);
-      process.env.EXCEPTIONNAL_SLEEP = "0.4";
+      process.env.EXCEPTIONNAL_SLEEP = "1";
     }
 
     await sleepMinutes(minutesToSleep(sports));
