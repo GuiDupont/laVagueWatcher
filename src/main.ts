@@ -25,7 +25,6 @@ async function setUp() {
 }
 
 async function launchProgram() {
-  
   let checker: seancesChecker = await new seancesChecker().init();
   while (1) {
     try {
@@ -57,17 +56,16 @@ async function launchProgram() {
 }
 
 async function main() {
-
   await sleepSeconds(10);
-	return 0;
+  return 0;
   try {
     setUp();
     await launchProgram();
   } catch (e) {
-  	process.exit(1);
+    process.exit(1);
   }
 }
 
 main()
   .catch((e) => console.log("error: " + e))
-  .finally(async () => {});
+  .finally();
