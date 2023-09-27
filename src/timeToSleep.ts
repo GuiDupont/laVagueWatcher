@@ -27,7 +27,7 @@ export function minutesToSleep(sports: ISport[]) {
   sports.forEach((sport) => {
     if (sport.readyToBeBooked) oneSportIsReady = true;
     else oneSportIsNotReady = true;
-    if (sport.lastValue === 2) fastMode = true;
+    if (sport.lastValue === 1) fastMode = true;
   });
   if (!fastMode) return 60; // slow mode
   else if (oneSportIsReady && oneSportIsNotReady) return 0; // urgence !!
