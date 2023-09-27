@@ -49,7 +49,7 @@ async function launchProgram() {
 
       checker = await new seancesChecker().init();
       log([(err as Error).message, "error"]);
-      process.env.EXCEPTIONNAL_SLEEP = "1";
+      // process.env.EXCEPTIONNAL_SLEEP = "0.1";
     }
 
     await sleepMinutes(minutesToSleep(sports));
