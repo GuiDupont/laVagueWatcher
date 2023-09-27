@@ -26,10 +26,6 @@ export const sports = [
         begin_hour: "11h15",
       },
       {
-        day: "Mardi",
-        begin_hour: "20h15",
-      },
-      {
         day: "Jeudi",
         begin_hour: "11h15",
       },
