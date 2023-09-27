@@ -29,7 +29,7 @@ async function launchProgram() {
     try {
       if (checker.page?.url() === "about:blank") await checker.loginLaVague();
       await checker.goToActivityPage().catch((err) => {
-        throw new Error("Error : goToActivityPage");
+        throw new Error(err);
       });
       await checker.checkSportsReadiness();
       await checker.bookSportsReady();
