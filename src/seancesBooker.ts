@@ -67,7 +67,9 @@ export class seancesBooker {
         if (nextPeriodIsPrepared(sports[i])) {
           sports[i].next_period.wantedAndAvailableSeancesIndexes =
             this.getButtonIndexes(sports[i]);
-          await this.bookSeances(sports[i]);
+          await this.bookSeances(sports[i]).catch((err) =>
+            sendMessageManagement(`can 't book seances ${err.message}`)
+          );
         }
       }
     }
@@ -107,15 +109,19 @@ export class seancesBooker {
     console.log(slotsSelector);
 
     log(["I have slots " + sport.name + " page"]);
-    const slots = await slotsSelector?.evaluate((el) => {
-      return Array.from(el.children).map((child) => {
-        const period = (child as HTMLInputElement).value;
-        return {
-          begin_end: child.innerHTML,
-          period_id: period,
-        };
+    const slots = await slotsSelector
+      ?.evaluate((el) => {
+        return Array.from(el.children).map((child) => {
+          const period = (child as HTMLInputElement).value;
+          return {
+            begin_end: child.innerHTML,
+            period_id: period,
+          };
+        });
+      })
+      .catch(() => {
+        return null;
       });
-    });
 
     if (!slots) {
       log(["I don't have slots " + sport.name + " page"]);
@@ -128,9 +134,8 @@ export class seancesBooker {
   }
 
   async setNextPeriodSeances(sport: ISport) {
-    sport.next_period.allSeances = await this.page.$$eval(
-      "table",
-      (el: any) => {
+    sport.next_period.allSeances = await this.page
+      .$$eval("table", (el: any) => {
         const table = el[1] as HTMLTableElement;
         const rows = Array.from(table.rows);
         const result: ISeance[] = [];
@@ -157,8 +162,10 @@ export class seancesBooker {
           }
         });
         return result;
-      }
-    );
+      })
+      .catch(() => {
+        throw new Error("Can't get seances");
+      });
     console.log("--------", sport.next_period.allSeances);
   }
 
@@ -229,7 +236,10 @@ export class seancesBooker {
     });
 
     try {
-      await this.fillInscriptionForm();
+      await this.fillInscriptionForm().catch((err) => {
+        log(["error filling inscription form", err.message]);
+        throw new Error("Can't fill inscription form");
+      });
     } catch (err: any) {
       log(["error filling inscription form", err.message]);
       throw new Error("Can't fill inscription form");

@@ -28,7 +28,9 @@ async function launchProgram() {
   while (1) {
     try {
       if (checker.page?.url() === "about:blank") await checker.loginLaVague();
-      await checker.goToActivityPage();
+      await checker.goToActivityPage().catch((err) => {
+        throw new Error("Error : goToActivityPage");
+      });
       await checker.checkSportsReadiness();
       await checker.bookSportsReady();
       checker.booker!.checkIfBookingIsOverForAllSports();

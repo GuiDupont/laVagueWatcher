@@ -137,7 +137,7 @@ export class seancesChecker {
       log("before goto book url");
       await this.page
         .goto(BOOK_URL, {
-          timeout: 15_000,
+          timeout: 20_000,
         })
         .catch(() => {
           throw new Error("Can't go to book url");
