@@ -22,8 +22,16 @@ export const sports = [
 
     creneauxWanted: [
       {
+        day: "Lundi",
+        begin_hour: "18h15",
+      },
+      {
         day: "Mardi",
         begin_hour: "11h15",
+      },
+      {
+        day: "Mardi",
+        begin_hour: "20h30",
       },
       {
         day: "Jeudi",
