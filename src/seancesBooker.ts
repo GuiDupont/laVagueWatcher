@@ -8,6 +8,7 @@ import {
   isTest,
   log,
   nextPeriodIsPrepared,
+  sleep,
   sleepMinutes,
   sleepSeconds,
 } from "./utils";
@@ -59,14 +60,17 @@ export class seancesBooker {
 
   async bookSportsReady() {
     for (let i = 0; i < this.sports.length; i++) {
+      console.log("readyToBeBooked", sports[i].readyToBeBooked);
       if (sports[i].readyToBeBooked) {
         if (!nextPeriodIsPrepared(sports[i]))
           await this.prepareNextPeriod(sports[i]).catch((err) =>
             sendMessageManagement(`can 't prepare next period ${err.message}`)
           );
+        console.log("nextPeriodIsPrepared", nextPeriodIsPrepared(sports[i]));
         if (nextPeriodIsPrepared(sports[i])) {
           sports[i].next_period.wantedAndAvailableSeancesIndexes =
             this.getButtonIndexes(sports[i]);
+          console.log(sports[i].next_period.wantedAndAvailableSeancesIndexes);
           await this.bookSeances(sports[i]).catch((err) =>
             sendMessageManagement(`can 't book seances ${err.message}`)
           );
@@ -92,10 +96,11 @@ export class seancesBooker {
     await this.page
       .waitForNetworkIdle({ timeout: 10_000 })
       .catch(() => console.log("network idle prepare next period"));
-
+    console.log("before setNextPeriodSeances");
     await this.setNextPeriodSeances(sport).catch(() => {
       throw new Error("Error in setNextPeriodSeances");
     });
+    console.log(sport.next_period.allSeances);
   }
 
   async setNextPeriodUrl(sport: ISport) {
@@ -134,11 +139,14 @@ export class seancesBooker {
   }
 
   async setNextPeriodSeances(sport: ISport) {
+    console.log("prepare next period");
     sport.next_period.allSeances = await this.page
       .$$eval("table", (el: any) => {
         const table = el[1] as HTMLTableElement;
         const rows = Array.from(table.rows);
+
         const result: ISeance[] = [];
+
         rows.forEach((row) => {
           const cell = Array.from(row.children);
 
@@ -146,27 +154,24 @@ export class seancesBooker {
           const capacity = (cell[1] as any).innerText
             .replace(/(\r\n|\n|\r|\t)/gm, " ")
             .split(" ")
-            .filter((el: string) => el.includes("/"));
-
+            .filter((el: string) => el.includes("/")) as string[];
           const hours = (cell[1] as any).innerText
             .replace(/(\r\n|\n|\r|\t)/gm, " ")
             .split(" ")
-            .filter((el: string) => el.includes(">"));
-          for (let i = 0; i < hours.length; i++) {
-            result.push({
-              date: date,
-              plage: hours[i],
-              booked: false,
-              available: capacity[i].split("/")[0] != capacity[i].split("/")[1],
-            });
-          }
+            .filter((el: string) => el.includes("h"));
+          const places = capacity[0].split("/");
+          result.push({
+            date: date,
+            plage: hours[0],
+            booked: false,
+            available: places as any,
+          });
         });
         return result;
       })
       .catch(() => {
         throw new Error("Can't get seances");
       });
-    console.log("--------", sport.next_period.allSeances);
   }
 
   getButtonIndexes(sport: ISport) {
@@ -180,7 +185,7 @@ export class seancesBooker {
           seance.plage.includes(creneau.begin_hour) &&
           seance.booked === false
         ) {
-          if (seance.available === true) indexes.push(i);
+          if (seance.available) indexes.push(i);
           else if (!isTest())
             sendMessage(
               `Il n'y a plus de place pour ${sport.name} le ${seance.date} à ${seance.plage}`
@@ -224,13 +229,14 @@ export class seancesBooker {
       .catch(() => log(["done waiting for goto sport.next_period_url"]));
 
     const buttons = await this.page
-      .$$("table tbody tr td table tbody tr td img")
+      .$$("table tbody tr td table tbody tr td a")
       .catch(() => {
         log(["error getting buttons"]);
         throw new Error("Can't get buttons");
       });
+    console.log(buttons);
 
-    await buttons[2 + index * 3].click().catch((err: any) => {
+    await buttons[index].click().catch((err: any) => {
       log(["error clicking on button", err.message]);
       throw new Error("Can't click on button");
     });
@@ -262,6 +268,7 @@ export class seancesBooker {
   }
 
   async fillInscriptionForm() {
+    // console.log("fill inscription form");
     const prenom = await this.page
       .waitForSelector('input[name="prenom"]', {
         timeout: 10_000,
@@ -290,6 +297,9 @@ export class seancesBooker {
     await validate?.click().catch(() => {
       throw new Error("Can't click validate");
     });
+    const dest = "https://moncentreaquatique.com/module-inscriptions/infos/";
+    await this.page.goto(dest);
+
     await this.page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {
       log(["waiting for click done"]);
     });
