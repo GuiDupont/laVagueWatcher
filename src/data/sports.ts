@@ -3,42 +3,42 @@ import { BODYPUMP_URL, CAF_URL, CT_URL, RPM_URL, ZUMBA_URL } from "./constants";
 import { ISport } from "../types/types";
 
 export const sports = [
-  // {
-  //   url: RPM_URL,
-  //   name: "RPM",
-  //   lastValue: Number.MAX_SAFE_INTEGER,
-  //   tarif: "1195387",
-  //   doneBooking: false,
-  //   next_period: {
-  //     begin_end: "",
-  //     period_id: "",
-  //     url: "",
-  //     allSeances: [],
-  //     wantedAndAvailableSeancesIndexes: [],
-  //   },
-  //   id: 24,
-  //   niveau: 0,
-  //   readyToBeBooked: false,
+  {
+    url: RPM_URL,
+    name: "RPM",
+    lastValue: Number.MAX_SAFE_INTEGER,
+    tarif: "1195387",
+    doneBooking: false,
+    next_period: {
+      begin_end: "",
+      period_id: "",
+      url: "",
+      allSeances: [],
+      wantedAndAvailableSeancesIndexes: [],
+    },
+    id: 24,
+    niveau: 0,
+    readyToBeBooked: false,
 
-  //   creneauxWanted: [
-  //     {
-  //       day: "Lundi",
-  //       begin_hour: "18h15",
-  //     },
-  //     {
-  //       day: "Mardi",
-  //       begin_hour: "11h15",
-  //     },
-  //     {
-  //       day: "Mardi",
-  //       begin_hour: "20h30",
-  //     },
-  //     {
-  //       day: "Jeudi",
-  //       begin_hour: "11h15",
-  //     },
-  //   ],
-  // },
+    creneauxWanted: [
+      {
+        day: "Lundi",
+        begin_hour: "18h15",
+      },
+      {
+        day: "Mardi",
+        begin_hour: "11h15",
+      },
+      {
+        day: "Mardi",
+        begin_hour: "20h30",
+      },
+      {
+        day: "Jeudi",
+        begin_hour: "11h15",
+      },
+    ],
+  },
   // {
   //   url: CT_URL,
   //   name: "Circuit Training",
@@ -67,33 +67,33 @@ export const sports = [
   //     },
   //   ],
   // },
-  {
-    url: ZUMBA_URL,
-    name: "Zumba",
-    lastValue: 2,
-    tarif: "1195517",
-    doneBooking: false,
-    next_period: {
-      begin_end: "",
-      period_id: "",
-      url: "",
-      allSeances: [],
-      wantedAndAvailableSeancesIndexes: [],
-    },
-    id: 25,
-    niveau: 0,
-    readyToBeBooked: false,
-    creneauxWanted: [
-      {
-        day: "Mardi",
-        begin_hour: "19h00",
-      },
-      {
-        day: "Vendredi",
-        begin_hour: "12h30",
-      },
-    ],
-  },
+  // {
+  //   url: ZUMBA_URL,
+  //   name: "Zumba",
+  //   lastValue: 2,
+  //   tarif: "1195517",
+  //   doneBooking: false,
+  //   next_period: {
+  //     begin_end: "",
+  //     period_id: "",
+  //     url: "",
+  //     allSeances: [],
+  //     wantedAndAvailableSeancesIndexes: [],
+  //   },
+  //   id: 25,
+  //   niveau: 0,
+  //   readyToBeBooked: false,
+  //   creneauxWanted: [
+  //     {
+  //       day: "Mardi",
+  //       begin_hour: "19h00",
+  //     },
+  //     {
+  //       day: "Vendredi",
+  //       begin_hour: "12h30",
+  //     },
+  //   ],
+  // },
   // {
   //   url: BODYPUMP_URL,
   //   name: "Body Pump",
