@@ -76,34 +76,34 @@ export const sports = [
   //     },
   //   ],
   // },
-  {
-    url: CT_URL,
-    name: "Circuit Training",
-    // lastValue: Number.MAX_SAFE_INTEGER,
-    lastValue: 1,
-    tarif: "1195335",
-    doneBooking: false,
-    next_period: {
-      begin_end: "",
-      period_id: "",
-      url: "",
-      allSeances: [],
-      wantedAndAvailableSeancesIndexes: [],
-    },
-    id: 62,
-    niveau: 126,
-    readyToBeBooked: false,
-    creneauxWanted: [
-      {
-        day: "Mercredi",
-        begin_hour: "18h15",
-      },
-      // {
-      //   day: "Vendredi",
-      //   begin_hour: "18h00",
-      // },
-    ],
-  },
+  // {
+  //   url: CT_URL,
+  //   name: "Circuit Training",
+  //   // lastValue: Number.MAX_SAFE_INTEGER,
+  //   lastValue: 1,
+  //   tarif: "1195335",
+  //   doneBooking: false,
+  //   next_period: {
+  //     begin_end: "",
+  //     period_id: "",
+  //     url: "",
+  //     allSeances: [],
+  //     wantedAndAvailableSeancesIndexes: [],
+  //   },
+  //   id: 62,
+  //   niveau: 126,
+  //   readyToBeBooked: false,
+  //   creneauxWanted: [
+  //     {
+  //       day: "Mercredi",
+  //       begin_hour: "18h15",
+  //     },
+  //     // {
+  //     //   day: "Vendredi",
+  //     //   begin_hour: "18h00",
+  //     // },
+  //   ],
+  // },
   // {
   //   url: ZUMBA_URL,
   //   name: "Zumba",
