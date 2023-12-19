@@ -97,7 +97,8 @@ export class seancesBooker {
       .waitForNetworkIdle({ timeout: 10_000 })
       .catch(() => console.log("network idle prepare next period"));
     console.log("before setNextPeriodSeances");
-    await this.setNextPeriodSeances(sport).catch(() => {
+    await this.setNextPeriodSeances(sport).catch((e: any) => {
+      console.log(e.message);
       throw new Error("Error in setNextPeriodSeances");
     });
     console.log(sport.next_period.allSeances);
@@ -159,17 +160,20 @@ export class seancesBooker {
             .replace(/(\r\n|\n|\r|\t)/gm, " ")
             .split(" ")
             .filter((el: string) => el.includes("h"));
-          const places = capacity[0].split("/");
+          
+          const places = capacity.length ? capacity[0].split("/") : ["0", "0"];
+          // result.push(capacity as any, (cell[1] as any).innerText);
           result.push({
             date: date,
             plage: hours[0],
             booked: false,
-            available: places as any,
+            available: places[0] !== places[1],
           });
         });
         return result;
       })
-      .catch(() => {
+      .catch((e: any) => {
+        console.log("error getting seances", e.message);
         throw new Error("Can't get seances");
       });
   }
@@ -250,10 +254,11 @@ export class seancesBooker {
       log(["error filling inscription form", err.message]);
       throw new Error("Can't fill inscription form");
     }
-    if (isTest()) {
-      seances![index].booked = true;
-      return;
-    }
+
+    // if (isTest()) {
+    //   seances![index].booked = true;
+    //   return;
+    // }
 
     const result = await this.page
       .goto(CONFIRM_BOOK_URL, { timeout: 15_000 })
@@ -269,6 +274,7 @@ export class seancesBooker {
 
   async fillInscriptionForm() {
     // console.log("fill inscription form");
+
     const prenom = await this.page
       .waitForSelector('input[name="prenom"]', {
         timeout: 10_000,
@@ -276,6 +282,7 @@ export class seancesBooker {
       .catch(() => {
         throw new Error("Can't find prenom");
       });
+
     await prenom?.type(process.env.PRENOM!);
     const nom = await this.page
       .waitForSelector('input[id="nom"]', {
@@ -284,6 +291,7 @@ export class seancesBooker {
       .catch(() => {
         throw new Error("Can't find nom");
       });
+
     await nom?.type(process.env.NOM!).catch(() => {
       throw new Error("Can't type nom");
     });
@@ -294,11 +302,11 @@ export class seancesBooker {
       .catch(() => {
         throw new Error("Can't find validate");
       });
+
     await validate?.click().catch(() => {
       throw new Error("Can't click validate");
     });
-    const dest = "https://moncentreaquatique.com/module-inscriptions/infos/";
-    await this.page.goto(dest);
+  
 
     await this.page.waitForNetworkIdle({ timeout: 10_000 }).catch(() => {
       log(["waiting for click done"]);
